@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vigneshwaran // Distributed Systems Architect &amp; Cyber Portfolio</title>
+  <meta name="description" content="Modern responsive dark-mode cyberpunk portfolio with interactive Three.js 3D particle animations, Firebase Firestore name verification, and distributed systems architecture.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Application Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Three.js Interactive 3D Canvas Background -->
+  <canvas id="three-canvas"></canvas>
+
+  <div class="site-wrapper">
+
+    <!-- Top Telemetry HUD Bar -->
+    <aside class="telemetry-hud">
+      <div class="hud-group priority">
+        <div class="hud-item">
+          <span class="hud-pulse"></span>
+          <span>NODE: <strong>SYD-02 [ONLINE]</strong></span>
+        </div>
+        <div class="hud-item">
+          <i class="fa-solid fa-bolt" style="color: var(--accent-red-bright); font-size: 0.65rem;"></i>
+          <span>RTT: <strong>14ms</strong></span>
+        </div>
+        <div class="hud-item" id="hud-firebase-status" style="cursor: pointer;" title="Click to view Firebase Configuration">
+          <span class="hud-pulse red"></span>
+          <span>FIRESTORE: <strong>SANDBOX</strong></span>
+        </div>
+      </div>
+
+      <div class="hud-group">
+        <div class="hud-item">
+          <i class="fa-solid fa-lock" style="color: var(--accent-cyan); font-size: 0.65rem;"></i>
+          <span>SECURITY: <strong>AES-256-GCM</strong></span>
+        </div>
+        <button class="hud-btn" id="btn-open-firebase-config" title="Configure Cloud Firebase credentials">
+          <i class="fa-solid fa-database"></i> FIREBASE CONFIG
+        </button>
+        <button class="hud-btn" id="toggle-audio-btn" title="Toggle procedural cyber audio synthesis">
+          <i class="fa-solid fa-volume-xmark"></i> AUDIO: OFF
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Navigation Header -->
+    <header class="site-header">
+      <a href="#hero" class="brand-logo">
+        <div class="brand-emblem">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">VIGNESHWARAN<span class="red">.DEV</span></span>
+          <span class="brand-tag">// DISTRIBUTED SYSTEMS CORE</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links" id="nav-links">
+          <li><a href="#hero" class="nav-link"><span class="nav-idx">01</span>OVERVIEW</a></li>
+          <li><a href="#architecture" class="nav-link"><span class="nav-idx">02</span>ARCHITECTURE</a></li>
+          <li><a href="#projects" class="nav-link"><span class="nav-idx">03</span>PROJECTS</a></li>
+          <li><a href="#skills" class="nav-link"><span class="nav-idx">04</span>MATRIX</a></li>
+          <li><a href="#registry" class="nav-link"><span class="nav-idx">05</span>REGISTRY</a></li>
+          <li><a href="#terminal-section" class="nav-link"><span class="nav-idx">06</span>TERMINAL</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="#registry" class="btn-cyber btn-sm">
+          <i class="fa-solid fa-id-card"></i> PROVISION ID
+        </a>
+        <button class="nav-toggle-btn" id="nav-toggle" aria-label="Toggle navigation menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+      <!-- =================================================================
+           HERO SECTION
+           ================================================================= -->
+      <section id="hero" class="hero-section">
+        <div class="container">
+          <div class="hero-grid">
+            
+            <div class="hero-content">
+              <div class="hero-status-pill">
+                <span class="hud-pulse"></span>
+                <span>PROTOCOL LEVEL 5 &bull; DISTRIBUTED ARCHITECT</span>
+              </div>
+
+              <h1 class="hero-headline">
+                ENGINEERING <span class="neon-red">FAULT-TOLERANT</span> DISTRIBUTED ECOSYSTEMS.
+              </h1>
+
+              <p class="hero-lead">
+                Specialized in <strong>ultra-low-latency liquidation engines</strong>, 
+                <strong>autonomous AI agent swarms</strong>, and <strong>offline-first CRDT synchronization</strong>. 
+                Designing high-throughput platforms where sub-millisecond deterministic consistency is mission critical.
+              </p>
+
+              <div class="hero-cta-group">
+                <a href="#registry" class="btn-cyber">
+                  <i class="fa-solid fa-bolt"></i> INITIATE HANDSHAKE
+                </a>
+                <a href="#architecture" class="btn-cyber-outline">
+                  <i class="fa-solid fa-microchip"></i> EXPLORE ARCHITECTURE
+                </a>
+              </div>
+
+              <div class="hero-metrics">
+                <div class="metric-item">
+                  <div class="metric-value">1.4M<span class="accent">+</span></div>
+                  <div class="metric-label">OPS / SEC Peak Throughput</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-value">&lt; 850<span class="accent">&#181;s</span></div>
+                  <div class="metric-label">P99 Liquidation Latency</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-value">99.999<span class="accent">%</span></div>
+                  <div class="metric-label">Fault-Tolerant Uptime</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hero Interactive Terminal Card -->
+            <div class="hero-terminal-card cyber-corners">
+              <div class="terminal-header">
+                <div class="terminal-dots">
+                  <span class="terminal-dot red"></span>
+                  <span class="terminal-dot yellow"></span>
+                  <span class="terminal-dot green"></span>
+                </div>
+                <div class="terminal-title">kernel_telemetry.sh &bull; v4.19</div>
+                <div class="terminal-badge">LIVE REPL</div>
+              </div>
+
+              <div class="terminal-body" id="hero-terminal-body">
+                <div class="terminal-line"><span class="terminal-green">[OK]</span> Initializing Quantum-Resistant Kernel...</div>
+                <div class="terminal-line"><span class="terminal-green">[OK]</span> Three.js 3D WebGL Particle Engine bound to DOM</div>
+                <div class="terminal-line"><span class="terminal-green">[OK]</span> Connecting Firestore distributed state channels...</div>
+                <div class="terminal-line"><span class="terminal-cyan">[INFO]</span> Consensus quorum active across 7 partition nodes</div>
+                <div class="terminal-line"><span class="terminal-dim">// Type "help" or "verify &lt;handle&gt;" below to interact:</span></div>
+              </div>
+
+              <div style="padding: 0 1.25rem 1.25rem 1.25rem;">
+                <div class="terminal-input-row">
+                  <span class="terminal-prefix">></span>
+                  <input type="text" id="hero-terminal-input" class="terminal-prompt-input" placeholder="Type command (e.g. 'status', 'verify vortex', 'projects')..." autocomplete="off" spellcheck="false">
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================
+           ARCHITECTURE & PHILOSOPHY SECTION
+           ================================================================= -->
+      <section id="architecture">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-tag"><i class="fa-solid fa-sitemap"></i> CORE PRINCIPLES</div>
+            <h2 class="section-title">SYSTEM <span class="glow">ARCHITECTURE</span> PHILOSOPHY</h2>
+            <p class="section-desc">
+              Building resilient software requires mathematical rigor, deterministic state machines, and defensive zero-trust boundaries at every tier.
+            </p>
+          </div>
+
+          <div class="arch-grid">
+            <div class="glass-card cyber-corners">
+              <div class="arch-icon-wrap">
+                <i class="fa-solid fa-network-wired"></i>
+              </div>
+              <h3 class="arch-title">Distributed State Engines</h3>
+              <p class="arch-desc">
+                Decentralized consensus topologies utilizing Raft and Paxos variants. Eliminating single points of failure with zero split-brain exposure under partition strain.
+              </p>
+              <ul class="arch-spec-list">
+                <li><i class="fa-solid fa-check"></i> Monotonic State Transitions</li>
+                <li><i class="fa-solid fa-check"></i> Sub-millisecond Quorum Vote</li>
+                <li><i class="fa-solid fa-check"></i> High-Throughput Log Compaction</li>
+              </ul>
+            </div>
+
+            <div class="glass-card cyber-corners">
+              <div class="arch-icon-wrap">
+                <i class="fa-solid fa-shield-virus"></i>
+              </div>
+              <h3 class="arch-title">Zero-Trust Cryptography</h3>
+              <p class="arch-desc">
+                Mutual TLS, hardware-attested WebAuthn tokens, and post-quantum lattice-based key encapsulation to ensure immutable identity verification.
+              </p>
+              <ul class="arch-spec-list">
+                <li><i class="fa-solid fa-check"></i> ML-KEM Kyber-1024 Compliance</li>
+                <li><i class="fa-solid fa-check"></i> Hardware FIDO2 Authentications</li>
+                <li><i class="fa-solid fa-check"></i> Ephemeral Microsegmentation</li>
+              </ul>
+            </div>
+
+            <div class="glass-card cyber-corners">
+              <div class="arch-icon-wrap">
+                <i class="fa-solid fa-brain"></i>
+              </div>
+              <h3 class="arch-title">Autonomous AI Mesh</h3>
+              <p class="arch-desc">
+                Dynamic multi-agent swarm orchestration. Autonomous negotiation, state vector synchronization, and continuous distributed feedback loops.
+              </p>
+              <ul class="arch-spec-list">
+                <li><i class="fa-solid fa-check"></i> 120+ Concurrent Agent Nodes</li>
+                <li><i class="fa-solid fa-check"></i> Vector Memory Sharding</li>
+                <li><i class="fa-solid fa-check"></i> Self-Healing Agent Quorums</li>
+              </ul>
+            </div>
+
+            <div class="glass-card cyber-corners">
+              <div class="arch-icon-wrap">
+                <i class="fa-solid fa-rotate"></i>
+              </div>
+              <h3 class="arch-title">Deterministic CRDTs</h3>
+              <p class="arch-desc">
+                Offline-first data structures guaranteeing mathematical convergence without central coordinator round-trips.
+              </p>
+              <ul class="arch-spec-list">
+                <li><i class="fa-solid fa-check"></i> Conflict-Free Invariant Guarantees</li>
+                <li><i class="fa-solid fa-check"></i> IndexedDB Client Persistence</li>
+                <li><i class="fa-solid fa-check"></i> Cryptographic Merkle Proofs</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Interactive Pipeline Visualizer -->
+          <div class="pipeline-visualizer cyber-corners">
+            <div class="pipeline-header">
+              <div class="pipeline-title">
+                <i class="fa-solid fa-diagram-project" style="color: var(--accent-red-bright); margin-right: 0.5rem;"></i>
+                REAL-TIME DATA INGESTION &amp; LIQUIDATION PIPELINE
+              </div>
+              <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-green);">
+                <i class="fa-solid fa-circle-dot"></i> PIPELINE NOMINAL
+              </div>
+            </div>
+
+            <div class="pipeline-flow">
+              <div class="flow-node">
+                <div class="flow-node-icon"><i class="fa-solid fa-laptop-code"></i></div>
+                <div class="flow-node-title">Client Ingress</div>
+                <div class="flow-node-sub">TLS 1.3 / gRPC-Web</div>
+              </div>
+              <div class="flow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+
+              <div class="flow-node">
+                <div class="flow-node-icon"><i class="fa-solid fa-server"></i></div>
+                <div class="flow-node-title">Edge Gateway</div>
+                <div class="flow-node-sub">Zero-Trust Auth Token</div>
+              </div>
+              <div class="flow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+
+              <div class="flow-node">
+                <div class="flow-node-icon"><i class="fa-solid fa-fire-burner"></i></div>
+                <div class="flow-node-title">Liquidation Core</div>
+                <div class="flow-node-sub">&lt; 850&#181;s Risk Engine</div>
+              </div>
+              <div class="flow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+
+              <div class="flow-node">
+                <div class="flow-node-icon"><i class="fa-solid fa-database"></i></div>
+                <div class="flow-node-title">Firestore Cloud</div>
+                <div class="flow-node-sub">Global Replication</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- =================================================================
+           FLAGSHIP PROJECTS SECTION
+           ================================================================= -->
+      <section id="projects">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-tag"><i class="fa-solid fa-folder-open"></i> PROVEN IMPLEMENTATIONS</div>
+            <h2 class="section-title">FLAGSHIP <span class="glow">SYSTEMS</span> &amp; PROJECTS</h2>
+            <p class="section-desc">
+              Production-grade software architectures operating under extreme throughput, real-time cryptographic constraints, and high volatility.
+            </p>
+          </div>
+
+          <div class="projects-filter-bar">
+            <button class="filter-btn active" data-filter="all">ALL ARCHITECTURES</button>
+            <button class="filter-btn" data-filter="ai">AUTONOMOUS AI</button>
+            <button class="filter-btn" data-filter="fintech">FINTECH &amp; LIQUIDATION</button>
+            <button class="filter-btn" data-filter="crdt">OFFLINE-FIRST CRDT</button>
+            <button class="filter-btn" data-filter="crypto">CRYPTOGRAPHY</button>
+          </div>
+
+          <div class="projects-grid">
+            
+            <!-- Project 1: Autonomous AI Ecosystem -->
+            <div class="project-card cyber-corners" data-category="ai">
+              <div>
+                <div class="project-top-row">
+                  <span class="project-badge">ACTIVE &bull; V3.4</span>
+                  <span class="project-idx">01</span>
+                </div>
+                <h3 class="project-title">Autonomous AI Multi-Agent Mesh</h3>
+                <p class="project-desc">
+                  Decentralized multi-agent swarm architecture orchestrating 120+ autonomous LLM nodes with peer-to-peer consensus, dynamic vector routing, and self-healing memory partitions.
+                </p>
+              </div>
+
+              <div>
+                <div class="project-metrics-pill">
+                  <span class="metric-label">Execution Speed:</span>
+                  <span class="metric-val">38ms / tool handoff</span>
+                </div>
+
+                <div class="project-tech-tags">
+                  <span class="tech-tag">Rust</span>
+                  <span class="tech-tag">Python</span>
+                  <span class="tech-tag">WebSockets</span>
+                  <span class="tech-tag">Three.js</span>
+                  <span class="tech-tag">Firestore</span>
+                </div>
+
+                <div class="project-actions">
+                  <button class="btn-cyber btn-sm" data-project-trigger="ai-mesh">
+                    <i class="fa-solid fa-chart-line"></i> SYSTEM SPECS
+                  </button>
+                  <a href="#terminal-section" class="btn-cyber-outline btn-sm">
+                    <i class="fa-solid fa-terminal"></i> CLI DEMO
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project 2: High-Frequency Liquidation Engine -->
+            <div class="project-card cyber-corners" data-category="fintech">
+              <div>
+                <div class="project-top-row">
+                  <span class="project-badge">ENTERPRISE CORE</span>
+                  <span class="project-idx">02</span>
+                </div>
+                <h3 class="project-title">Ultra-Low-Latency Liquidation Engine</h3>
+                <p class="project-desc">
+                  High-frequency deterministic risk assessment and automated position unwind engine engineered to operate under extreme volatility in decentralized derivatives markets.
+                </p>
+              </div>
+
+              <div>
+                <div class="project-metrics-pill">
+                  <span class="metric-label">P99 Engine Latency:</span>
+                  <span class="metric-val">&lt; 850 microseconds</span>
+                </div>
+
+                <div class="project-tech-tags">
+                  <span class="tech-tag">C++20</span>
+                  <span class="tech-tag">Go</span>
+                  <span class="tech-tag">Kafka</span>
+                  <span class="tech-tag">gRPC</span>
+                  <span class="tech-tag">TimescaleDB</span>
+                </div>
+
+                <div class="project-actions">
+                  <button class="btn-cyber btn-sm" data-project-trigger="liquidation-engine">
+                    <i class="fa-solid fa-chart-line"></i> SYSTEM SPECS
+                  </button>
+                  <a href="#terminal-section" class="btn-cyber-outline btn-sm">
+                    <i class="fa-solid fa-terminal"></i> CLI DEMO
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project 3: Offline-First CRDT Invoicing System -->
+            <div class="project-card cyber-corners" data-category="crdt">
+              <div>
+                <div class="project-top-row">
+                  <span class="project-badge">EDGE REPLICATION</span>
+                  <span class="project-idx">03</span>
+                </div>
+                <h3 class="project-title">Offline-First CRDT Invoicing Platform</h3>
+                <p class="project-desc">
+                  Cryptographically signed peer-to-peer ledger synchronizer operating without internet connectivity, auto-resolving conflict states via monotonic semi-lattices upon reconnect.
+                </p>
+              </div>
+
+              <div>
+                <div class="project-metrics-pill">
+                  <span class="metric-label">Conflict Resolution:</span>
+                  <span class="metric-val">100% Deterministic</span>
+                </div>
+
+                <div class="project-tech-tags">
+                  <span class="tech-tag">TypeScript</span>
+                  <span class="tech-tag">IndexedDB</span>
+                  <span class="tech-tag">WebRTC</span>
+                  <span class="tech-tag">Ed25519</span>
+                  <span class="tech-tag">Firestore</span>
+                </div>
+
+                <div class="project-actions">
+                  <button class="btn-cyber btn-sm" data-project-trigger="crdt-invoicing">
+                    <i class="fa-solid fa-chart-line"></i> SYSTEM SPECS
+                  </button>
+                  <a href="#registry" class="btn-cyber-outline btn-sm">
+                    <i class="fa-solid fa-database"></i> TEST SYNC
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project 4: Quantum-Resistant Identity Authenticator -->
+            <div class="project-card cyber-corners" data-category="crypto">
+              <div>
+                <div class="project-top-row">
+                  <span class="project-badge">POST-QUANTUM</span>
+                  <span class="project-idx">04</span>
+                </div>
+                <h3 class="project-title">Quantum-Resistant Identity Authenticator</h3>
+                <p class="project-desc">
+                  Lattice-based key encapsulation mechanism (ML-KEM Kyber-1024) integrated with WebAuthn hardware biometric security keys for zero-trust identity attestation.
+                </p>
+              </div>
+
+              <div>
+                <div class="project-metrics-pill">
+                  <span class="metric-label">Security Standard:</span>
+                  <span class="metric-val">NIST PQC Level 5</span>
+                </div>
+
+                <div class="project-tech-tags">
+                  <span class="tech-tag">WebAssembly</span>
+                  <span class="tech-tag">Kyber-1024</span>
+                  <span class="tech-tag">WebAuthn</span>
+                  <span class="tech-tag">Firebase Auth</span>
+                </div>
+
+                <div class="project-actions">
+                  <button class="btn-cyber btn-sm" data-project-trigger="quantum-auth">
+                    <i class="fa-solid fa-chart-line"></i> SYSTEM SPECS
+                  </button>
+                  <a href="#registry" class="btn-cyber-outline btn-sm">
+                    <i class="fa-solid fa-fingerprint"></i> VERIFY ID
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================
+           TECH MATRIX SECTION
+           ================================================================= -->
+      <section id="skills">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-tag"><i class="fa-solid fa-microchip"></i> COMPETENCY RADAR</div>
+            <h2 class="section-title">TECHNICAL <span class="glow">MATRIX</span> &amp; STACK</h2>
+            <p class="section-desc">
+              Engineered with modern toolchains for maximum memory safety, concurrency, and real-time responsiveness.
+            </p>
+          </div>
+
+          <div class="skills-grid">
+            <div class="skill-category-card cyber-corners">
+              <div class="skill-cat-title">
+                <i class="fa-solid fa-code"></i> Core Systems Languages
+              </div>
+              <div class="skill-items-list">
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">Rust / Concurrency</span><span class="skill-pct">96%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 96%;"></div></div>
+                </div>
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">Go (Golang) / Microservices</span><span class="skill-pct">94%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 94%;"></div></div>
+                </div>
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">C++20 / Low Latency</span><span class="skill-pct">89%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 89%;"></div></div>
+                </div>
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">TypeScript (ESNext)</span><span class="skill-pct">98%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 98%;"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="skill-category-card cyber-corners">
+              <div class="skill-cat-title">
+                <i class="fa-solid fa-server"></i> Distributed Infrastructure
+              </div>
+              <div class="skill-items-list">
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">Kafka &amp; Event Streams</span><span class="skill-pct">95%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 95%;"></div></div>
+                </div>
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">Kubernetes &amp; Docker</span><span class="skill-pct">92%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 92%;"></div></div>
+                </div>
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">Redis Enterprise Cluster</span><span class="skill-pct">93%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 93%;"></div></div>
+                </div>
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">WebSockets &amp; WebRTC</span><span class="skill-pct">91%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 91%;"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="skill-category-card cyber-corners">
+              <div class="skill-cat-title">
+                <i class="fa-solid fa-cube"></i> 3D WebGL &amp; Interface
+              </div>
+              <div class="skill-items-list">
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">Three.js Particle Engines</span><span class="skill-pct">95%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 95%;"></div></div>
+                </div>
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">GLSL Shaders &amp; WebGL2</span><span class="skill-pct">87%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 87%;"></div></div>
+                </div>
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">Glassmorphic Modern UI</span><span class="skill-pct">97%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 97%;"></div></div>
+                </div>
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">Web Audio API Synthesis</span><span class="skill-pct">88%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 88%;"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="skill-category-card cyber-corners">
+              <div class="skill-cat-title">
+                <i class="fa-solid fa-cloud"></i> Cloud &amp; Persistence
+              </div>
+              <div class="skill-items-list">
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">Firebase Firestore &amp; Auth</span><span class="skill-pct">96%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 96%;"></div></div>
+                </div>
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">PostgreSQL &amp; pgvector</span><span class="skill-pct">93%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 93%;"></div></div>
+                </div>
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">CRDT Monotonic Stores</span><span class="skill-pct">90%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 90%;"></div></div>
+                </div>
+                <div class="skill-row">
+                  <div class="skill-info"><span class="skill-name">IndexedDB Edge Storage</span><span class="skill-pct">92%</span></div>
+                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 92%;"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================
+           USER REGISTRATION & NAME VERIFICATION PORTAL SECTION
+           (Primary Interactive Requirement)
+           ================================================================= -->
+      <section id="registry" class="registry-section">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-tag"><i class="fa-solid fa-key"></i> IDENTITY &amp; FIRESTORE INTEGRATION</div>
+            <h2 class="section-title">CRYPTOGRAPHIC <span class="glow">REGISTRATION</span> &amp; VERIFICATION</h2>
+            <p class="section-desc">
+              Provision your developer handle into the decentralized registry. Powered by real-time Firebase Firestore queries to instantly verify handle availability without conflicts.
+            </p>
+          </div>
+
+          <div class="registry-container-grid">
+            
+            <!-- Registration Form Card -->
+            <div class="portal-box cyber-corners">
+              <div class="portal-header">
+                <div class="portal-title">
+                  <i class="fa-solid fa-id-badge"></i>
+                  <span>IDENTITY PROVISIONING PORTAL</span>
+                </div>
+                <div class="portal-subtitle">
+                  Real-time Firebase Firestore handle validation engine.
+                </div>
+              </div>
+
+              <form id="registration-form">
+                
+                <!-- Name / Handle Input with Interactive Verification -->
+                <div class="form-group">
+                  <label class="form-label" for="reg-name">
+                    <span>CODENAME / DEVELOPER HANDLE <span class="req">*</span></span>
+                    <span style="font-size: 0.68rem; color: var(--accent-cyan);">[INSTANT FIRESTORE CHECK]</span>
+                  </label>
+
+                  <div class="input-cyber-wrapper">
+                    <span class="input-cyber-icon"><i class="fa-solid fa-terminal"></i></span>
+                    <input 
+                      type="text" 
+                      id="reg-name" 
+                      class="input-cyber" 
+                      placeholder="e.g. quantum_coder, vortex_core, neo..." 
+                      autocomplete="off" 
+                      required
+                    >
+                    <button type="button" class="btn-verify-trigger" id="btn-manual-verify">
+                      <i class="fa-solid fa-magnifying-glass"></i> VERIFY
+                    </button>
+                  </div>
+
+                  <!-- Instant Name Verification Status Banner -->
+                  <div id="verification-status" class="verification-status-banner idle">
+                    <i class="fa-solid fa-terminal"></i>
+                    <span>Awaiting handle input...</span>
+                  </div>
+                </div>
+
+                <!-- Passkey / Password Input -->
+                <div class="form-group">
+                  <label class="form-label" for="reg-password">
+                    <span>SECURITY PASSKEY / PASSWORD <span class="req">*</span></span>
+                    <span style="font-size: 0.68rem; color: var(--text-muted);">&gt;= 6 Chars</span>
+                  </label>
+
+                  <div class="input-cyber-wrapper">
+                    <span class="input-cyber-icon"><i class="fa-solid fa-lock"></i></span>
+                    <input 
+                      type="password" 
+                      id="reg-password" 
+                      class="input-cyber" 
+                      placeholder="Enter secure cryptographic passkey..." 
+                      autocomplete="new-password" 
+                      required
+                    >
+                  </div>
+                </div>
+
+                <!-- Access Clearance Role Selection -->
+                <div class="form-group">
+                  <label class="form-label" for="reg-role">
+                    <span>SECURITY CLEARANCE &bull; ROLE ASSIGNMENT</span>
+                  </label>
+
+                  <div class="input-cyber-wrapper">
+                    <span class="input-cyber-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                    <select id="reg-role" class="input-cyber input-cyber-select">
+                      <option value="Systems Architect">Level 5 &bull; Distributed Systems Architect</option>
+                      <option value="Autonomous AI Engineer">Level 4 &bull; Autonomous AI Engineer</option>
+                      <option value="Liquidation Core Dev">Level 4 &bull; Liquidation Core Developer</option>
+                      <option value="Security Protocol Lead">Level 5 &bull; Security &amp; Cryptography Lead</option>
+                      <option value="Infrastructure Operator">Level 3 &bull; Infrastructure Operator</option>
+                      <option value="Developer Auditor">Level 2 &bull; External Systems Auditor</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-cyber btn-full" id="reg-submit-btn">
+                  <i class="fa-solid fa-id-badge"></i> PROVISION CYBER IDENTITY
+                </button>
+
+              </form>
+            </div>
+
+            <!-- Verified Registry Roster View -->
+            <div class="registry-roster-box cyber-corners">
+              <div class="roster-header">
+                <div class="roster-title">
+                  <i class="fa-solid fa-list-check" style="color: var(--accent-red-bright); margin-right: 0.5rem;"></i>
+                  DATABASE IDENTITY REGISTRY
+                </div>
+                <div class="roster-count" id="roster-count">4 IDENTITIES</div>
+              </div>
+
+              <input 
+                type="text" 
+                id="roster-search" 
+                class="roster-search-input" 
+                placeholder="Search registered handles, roles, or tokens..."
+              >
+
+              <div class="roster-list" id="roster-list">
+                <!-- Dynamically populated via js/firebase-service.js -->
+              </div>
+
+              <div style="margin-top: 1.25rem; padding-top: 0.8rem; border-top: 1px solid rgba(255, 42, 75, 0.15); font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
+                <span><i class="fa-solid fa-circle-info" style="color: var(--accent-cyan);"></i> Click any row above to test conflict verification</span>
+                <span style="color: var(--accent-green);"><i class="fa-solid fa-link"></i> Live Synced</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================
+           FULL INTERACTIVE COMMAND TERMINAL SECTION
+           ================================================================= -->
+      <section id="terminal-section">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-tag"><i class="fa-solid fa-terminal"></i> COMMAND &amp; CONTROL</div>
+            <h2 class="section-title">INTERACTIVE <span class="glow">COMMAND</span> TERMINAL</h2>
+            <p class="section-desc">
+              Execute live diagnostic instructions, query database states, or issue verification checks directly from the cyber shell.
+            </p>
+          </div>
+
+          <div class="terminal-full-card cyber-corners">
+            <div class="terminal-header">
+              <div class="terminal-dots">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+              </div>
+              <div class="terminal-title">nexus_shell@production:~# (bash / zsh)</div>
+              <div class="terminal-badge">INTERACTIVE SHELL</div>
+            </div>
+
+            <div class="terminal-full-body" id="full-terminal-body">
+              <div class="terminal-line"><span class="terminal-green">[SYSTEM INITIALIZED]:</span> Nexus Terminal Core v3.8.4 Active.</div>
+              <div class="terminal-line">Type <span class="terminal-cyan">help</span> to list all available instructions.</div>
+              <div class="terminal-line"><span class="terminal-dim">Try: "verify vortex_core", "verify new_handle", "stats", "projects", or "whoami".</span></div>
+            </div>
+
+            <div style="padding: 0 1.8rem 1.4rem 1.8rem;">
+              <div class="terminal-interactive-form">
+                <span class="terminal-prefix">root@nexus:~#</span>
+                <input 
+                  type="text" 
+                  id="full-terminal-input" 
+                  class="terminal-interactive-input" 
+                  placeholder="Enter instruction (e.g. 'help', 'verify neo', 'whoami', 'stats')..." 
+                  autocomplete="off" 
+                  spellcheck="false"
+                >
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- =================================================================
+         SITE FOOTER
+         ================================================================= -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="brand-logo" style="margin-bottom: 0.5rem;">
+              <div class="brand-emblem"><i class="fa-solid fa-shield-halved"></i></div>
+              <span class="brand-title">VIGNESHWARAN<span class="red">.DEV</span></span>
+            </div>
+            <p class="footer-brand-desc">
+              Architecting resilient, distributed systems, high-concurrency liquidation engines, and zero-trust cryptographic platforms.
+            </p>
+          </div>
+
+          <div>
+            <div class="footer-col-title">NAVIGATION NODES</div>
+            <ul class="footer-links">
+              <li><a href="#hero">01 // Executive Overview</a></li>
+              <li><a href="#architecture">02 // System Architecture</a></li>
+              <li><a href="#projects">03 // Flagship Implementations</a></li>
+              <li><a href="#registry">04 // Cryptographic Registry</a></li>
+              <li><a href="#terminal-section">05 // Interactive Shell</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="footer-col-title">INFRASTRUCTURE</div>
+            <ul class="footer-links">
+              <li><span style="color: var(--accent-green);"><i class="fa-solid fa-check"></i> Three.js WebGL Engine</span></li>
+              <li><span style="color: var(--accent-green);"><i class="fa-solid fa-check"></i> Firebase Firestore SDK</span></li>
+              <li><span style="color: var(--accent-green);"><i class="fa-solid fa-check"></i> Web Audio Synthesizer</span></li>
+              <li><span style="color: var(--accent-green);"><i class="fa-solid fa-check"></i> Responsive Glassmorphic UI</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div>&copy; 2026 VIGNESHWARAN. ALL SYSTEM RIGHTS SECURED. PROTOCOL LEVEL 5.</div>
+          <div>ENCRYPTION: AES-256-GCM &bull; HOSTED VIA ANTIGRAVITY RUNTIME</div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- =================================================================
+         PROJECT DETAILS MODAL
+         ================================================================= -->
+    <div class="modal-overlay" id="project-modal">
+      <div class="cyber-modal cyber-corners">
+        <div class="modal-header">
+          <div class="modal-title" id="project-modal-title">
+            <i class="fa-solid fa-microchip"></i> PROJECT SPECIFICATIONS
+          </div>
+          <button class="modal-close-btn" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body" id="project-modal-body">
+          <!-- Populated dynamically via js/app.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- =================================================================
+         FIREBASE CONFIGURATION MODAL
+         ================================================================= -->
+    <div class="modal-overlay" id="firebase-config-modal">
+      <div class="cyber-modal cyber-corners">
+        <div class="modal-header">
+          <div class="modal-title">
+            <i class="fa-solid fa-database" style="color: var(--accent-red-bright);"></i>
+            <span>FIREBASE FIRESTORE CONFIGURATION</span>
+          </div>
+          <button class="modal-close-btn" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div id="fb-current-status-note" style="margin-bottom: 1.25rem; font-family: var(--font-mono); font-size: 0.8rem;"></div>
+
+          <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.6;">
+            This portfolio includes dual database connectivity: an ultra-fast in-browser <strong>Sandbox Persistence Engine</strong> (active by default for instant zero-config testing) and direct connectivity to <strong>Live Firebase Firestore Cloud</strong>.
+          </p>
+
+          <form id="fb-config-form">
+            <div class="form-group">
+              <label class="form-label" for="fb-api-key">FIREBASE API KEY</label>
+              <input type="text" id="fb-api-key" class="input-cyber" style="padding-left: 1rem;" placeholder="AIzaSy..." autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="fb-project-id">FIREBASE PROJECT ID</label>
+              <input type="text" id="fb-project-id" class="input-cyber" style="padding-left: 1rem;" placeholder="my-cyber-portfolio" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="fb-auth-domain">AUTH DOMAIN (OPTIONAL)</label>
+              <input type="text" id="fb-auth-domain" class="input-cyber" style="padding-left: 1rem;" placeholder="my-cyber-portfolio.firebaseapp.com" autocomplete="off">
+            </div>
+
+            <div style="display: flex; gap: 0.8rem; margin-top: 1.5rem;">
+              <button type="submit" class="btn-cyber" style="flex: 1;">
+                <i class="fa-solid fa-cloud-arrow-up"></i> CONNECT LIVE FIREBASE
+              </button>
+              <button type="button" class="btn-cyber-outline" id="btn-reset-sandbox" style="flex: 1;">
+                <i class="fa-solid fa-rotate-left"></i> RESET SANDBOX
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cyber Toast Notification Host -->
+    <div class="toast-container" id="toast-container"></div>
+
+  </div>
+
+  <!-- CDN Dependencies: Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- CDN Dependencies: Firebase Compat Suite -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <!-- Application Logic Modules -->
+  <script src="js/sound-fx.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/firebase-service.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
