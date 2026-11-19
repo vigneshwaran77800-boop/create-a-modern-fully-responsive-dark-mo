@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function: Check if request is from authorized admin
+    function isAdmin() {
+      return request.auth != null && (request.auth.token.admin == true || request.auth.token.email.matches('.*@vit\\.ac\\.in'));
+    }
+
+    // Helper function: Check if request is from the student themselves
+    function isStudentOwner(studentUid) {
+      return request.auth != null && request.auth.uid == studentUid;
+    }
+
+    // 1. Approved Roll Numbers collection
+    // Read: Anyone authenticated or public roll status query via Cloud Functions
+    // Write: Only authorized administrators
+    match /approved_roll_numbers/{rollNumber} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 2. Students collection
+    // Read: Admins or the student themselves
+    // Write: Admin, or newly created via Cloud Functions
+    match /students/{studentUid} {
+      allow read: if isAdmin() || isStudentOwner(studentUid);
+      allow create: if request.auth != null && request.auth.uid == studentUid;
+      allow update: if isAdmin() || isStudentOwner(studentUid);
+      allow delete: if isAdmin();
+    }
+
+    // 3. Roll Number Claims (atomic lock records)
+    // Read: Only authenticated users
+    // Write: Prevent public client-side direct tampering; managed by Cloud Functions
+    match /roll_number_claims/{rollNumber} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // 4. Admins collection
+    match /admins/{adminId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Default deny all others
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
