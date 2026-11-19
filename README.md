@@ -1,97 +1,69 @@
-# ⚡ VIGNESHWARAN // DISTRIBUTED SYSTEMS & CYBERPUNK PORTFOLIO
+# 🎓 VIT STUDENT PORTAL — REGISTRATION & ROLL VERIFICATION SYSTEM
+### Vellore Institute of Technology // Official Student Onboarding Ecosystem
 
-A modern, responsive, high-performance dark-mode developer portfolio web application built with an immersive **Three.js 3D particle background**, **glassmorphic HUD cards**, **glowing crimson red accents**, and **Firebase Firestore real-time name verification & identity registry**.
+A futuristic, premium dark-mode student registration and roll number verification web application built with **HTML5, CSS3, JavaScript, Firebase Authentication & Firestore, Firebase Cloud Functions, GSAP, GSAP ScrollTrigger, and Lenis Smooth Scroll**.
 
-🌐 **Live Application Preview:** [Launch Cyber Portfolio](https://antigravity.luch.dev/site/9ae2b0d4-cfdb-4773-85be-b254ec499038/22129fd0984a773f71a6dcb1/)
-
----
-
-## 🚀 Key Features
-
-### 1. 🌌 3D Interactive Particle Matrix (Three.js)
-- **Volumetric Cyber Grid**: Over 2,600 floating crimson (`#ff2a4b`), ruby (`#e60000`), and spark-white particles generated with procedural radial glow maps.
-- **Smooth Parallax Momentum**: Camera and particle cloud dynamically track mouse movements and mobile touch gestures with easing (`lerp`).
-- **Holographic Geometries**: Rotating concentric wireframe icosahedrons and torus rings undulating in 3D depth space.
-- **Hardware-Optimized**: Caps `devicePixelRatio` at `2` and scales particle counts on mobile devices to prevent GPU throttling.
-
-### 2. 🛡️ User Registration & Name Verification System (Firebase)
-- **Instant Firestore Verification**: Real-time debounce check queries Firestore to confirm if a handle is already taken or cleared for reservation.
-- **Visual Status Banners**:
-  - `IDLE`: Awaiting user input
-  - `CHECKING`: Real-time query to Firestore index
-  - `AVAILABLE`: Neon green confirmation `ACCESS CLEARED`
-  - `CONFLICT`: Glowing red alert `ACCESS DENIED: Handle already provisioned`
-- **Identity Provisioning**: Generates a cryptographic verification hash (e.g. `0x8f4c...d81a`), clearance level, and stores the identity record.
-- **Interactive Database Registry Roster**: Glassmorphic live table displaying registered handles, roles, timestamps, and verification tokens with instant search filtering.
-- **Dual-Mode Persistence**: Works out-of-the-box in **Zero-Config Sandbox Mode** (with pre-seeded handles like `vortex_core`, `synapse_9`) and seamlessly switches to **Live Firebase Cloud** when project keys are provided.
-
-### 3. 💻 Interactive Cyber Terminal & Diagnostic Shell
-- Mini terminal in the Hero section with live telemetry stream.
-- Full interactive command shell supporting:
-  - `help` — Lists available kernel instructions
-  - `whoami` — Architect profile & background
-  - `verify <handle>` — Tests handle availability in database
-  - `register <handle> <passkey>` — Direct CLI identity provisioning
-  - `projects` — Inspects flagship distributed systems
-  - `stats` — Displays live engine benchmarks (<850µs latency, 1.4M ops/sec)
-  - `audio on|off` — Toggles procedural audio feedback
-  - `ping` — Measures round-trip execution latency
-  - `clear` — Flushes terminal buffer
-
-### 4. 🎛️ Procedural Web Audio Synthesizer
-- Built using the native **Web Audio API** with zero external audio assets.
-- Generates high-frequency hover ticks, crisp button clicks, rising arpeggiated success chimes, and warning alerts programmatically.
-- Audio toggle located in the top telemetry HUD bar (muted by default).
-
-### 5. 💎 High-End Cyberpunk Glassmorphic UI
-- **Palette**: Dark void background (`#050508`), glowing crimson highlights (`#ff2a4b`, `#ff3333`), and cyan telemetry markers (`#00f0ff`).
-- **Glassmorphism**: Multi-layered backdrop blurs (`backdrop-filter: blur(16px)`), semi-transparent surfaces, and cyber-angled polygon corners.
-- **Responsive Layout**: Designed for seamless rendering across desktop monitors, tablets, and mobile devices.
+🌐 **Live Application Preview:** [Launch VIT Student Portal](https://antigravity.luch.dev/site/9ae2b0d4-cfdb-4773-85be-b254ec499038/22129fd0984a773f71a6dcb1/)
 
 ---
 
-## 🛠️ Tech Stack
+## 🚀 Key Modules & Capabilities
 
-| Domain | Technologies |
-| :--- | :--- |
-| **Frontend Core** | HTML5, Modern CSS3 (Variables, Grid, Flexbox, Keyframes), ES6+ JavaScript |
-| **3D Graphics** | Three.js (r128), WebGL, Procedural Canvas Textures |
-| **Database & Auth** | Firebase SDK v10 (Firestore & Authentication) + Sandbox Persistence Engine |
-| **Audio Synthesis**| Web Audio API (Sine, Square, Sawtooth procedural oscillators) |
-| **Typography** | Orbitron, Space Grotesk, JetBrains Mono |
-| **Icons** | Font Awesome 6.5.2 |
+### 1. 🔍 Roll Number Verification Center (`verify.html`)
+- **Direct Clearance Check**: Enter any 10-character VIT Roll Number (e.g., `21BCE1024`, `22MIS0142`) to check verification status in real-time.
+- **Privacy-Preserving Dossier**: Displays candidate program, campus allocation, and batch without exposing sensitive personal emails, passwords, or contact records.
+- **Three Verification Outcomes**:
+  - `Valid & Available`: Pre-approved roll number ready for immediate single-click registration.
+  - `Valid & Registered`: Active enrolled student with cryptographic signature hash.
+  - `Invalid`: Rejection notice for numbers not listed in the Deanery approval roster.
+
+### 2. 📝 Student Onboarding & Atomic Registration (`register.html`)
+- **Live Debounce Verification**: Real-time validation check against the Deanery whitelist as the student types.
+- **Password Strength Analyzer**: 4-level visual security meter (length, lowercase, uppercase, numbers, symbols).
+- **Single-Claim Cryptographic Lock**: Guarantees zero duplicate registrations via atomic database transactions.
+- **Confetti Celebration Modal**: Triggers smooth celebratory visual burst upon successful onboarding with immediate access to the Student Dashboard.
+
+### 3. 💳 3D Holographic Digital Student ID Card (`dashboard.html`)
+- **Interactive Mouse/Gyro Tilt**: True 3D perspective card rotation with dynamic holographic sheen and gold security microchip.
+- **Dynamic QR Code**: Generates encrypted QR credentials scannable by campus turnstiles, library gates, and exam halls.
+- **Download / Print**: Generates high-resolution official student credential slips.
+
+### 4. 🛡️ Deanery Administrator Console (`admin.html`)
+- **Real-Time Analytics KPIs**: Total Approved Roll Numbers, Registered Students, Unclaimed Slots, and Onboarding Percentage.
+- **Interactive Roster Table**: Instant multi-parameter search (Name, Roll, Department, Campus) and status filters.
+- **Single Roll Number Authorizer**: Add approved candidates with customized branch allocations.
+- **Bulk CSV Ingest**: Automated CSV parser for bulk importing thousands of candidate roll numbers.
+- **CSV Data Export**: One-click download of the active student roster.
+- **Real-Time Audit Trail**: Activity log tracking registrations, verifications, and deletions.
 
 ---
 
-## 📂 File Structure
+## 🔑 Demo Evaluation Credentials
 
-```
-├── index.html                # Main application layout, HUD, sections, and modals
-├── css/
-│   └── style.css             # Glassmorphism, cyber neon accents, responsive layout
-├── js/
-│   ├── particles.js          # Three.js 3D particle background and parallax tracking
-│   ├── firebase-service.js   # Firestore querying, name verification, identity store
-│   ├── sound-fx.js           # Procedural Web Audio API sound generator
-│   └── app.js                # Terminal REPL, roster filtering, UI orchestration
-└── README.md                 # System documentation & architectural overview
-```
+Use these pre-seeded accounts to explore the portal immediately:
+
+| Role | Email / Identifier | Password | Access / Notes |
+| :--- | :--- | :--- | :--- |
+| **Deanery Admin** | `admin@vit.ac.in` | `VitAdmin#2026!` | Accesses `admin.html` with full roster privileges |
+| **Enrolled Student** | `priya.nair2022@vitstudent.ac.in` | `Student@123` | Roll: `22BCE1530` • 3D Holographic ID Card |
+| **Approved Roll (Unregistered)** | `21BCE1024` | *N/A (Ready to claim)* | Candidate: *Vigneshwaran S.* (CSE, Vellore) |
+| **Approved Roll (Unregistered)** | `24BCE1102` | *N/A (Ready to claim)* | Candidate: *Tanvi Joshi* (AIML, Chennai) |
 
 ---
 
-## ⚙️ Connecting Your Live Firebase Project
+## 🛠️ Technology Stack
 
-1. Click **FIREBASE CONFIG** in the top HUD or registry section.
-2. Enter your Firebase project details (`apiKey`, `projectId`, `authDomain`).
-3. Click **CONNECT LIVE FIREBASE**. The top HUD status indicator will immediately turn green: `FIRESTORE: LIVE CLOUD`.
-4. Ensure your Firestore security rules allow reading and writing to the `identities` collection:
-   ```javascript
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
-       match /identities/{document=**} {
-         allow read, write: if true; // Or configure your custom auth constraints
-       }
-     }
-   }
-   ```
+- **Frontend**: Semantic HTML5, Modern CSS3 (Glassmorphism, CSS Variables, Grids, 3D Transforms)
+- **Animations**: GSAP 3.12, GSAP ScrollTrigger, Lenis Smooth Scroll, Canvas Confetti
+- **Identity & Database**: Firebase Authentication, Cloud Firestore, Hybrid Persistent Engine
+- **Cloud Functions**: Node.js 18 server-side callable functions with atomic Firestore transactions
+- **Security**: Firestore Security Rules (`firestore.rules`), custom claims, input sanitization
+
+---
+
+## 🏫 Supported Campuses
+
+- **VIT Vellore (HQ)** — Flagship computing, engineering, and research campus
+- **VIT Chennai** — AI, Robotics, and Advanced Computing Hub
+- **VIT-AP (Amaravati)** — Software engineering & cyber security campus
+- **VIT Bhopal** — Cloud computing and aerospace technologies
