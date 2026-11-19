@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login // VIT Student &amp; Staff Portal</title>
+  <meta name="description" content="Secure authentication gate for VIT Students and Admissions Faculty.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Application Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Custom Cursor for Desktop -->
+  <div class="custom-cursor"></div>
+  <div class="cursor-follower"></div>
+
+  <!-- Ambient Glow & Background Canvas -->
+  <canvas id="ambient-canvas"></canvas>
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-2"></div>
+
+  <div class="app-wrapper">
+
+    <!-- Top Telemetry HUD -->
+    <aside class="telemetry-bar">
+      <div class="telemetry-group">
+        <div class="telemetry-item">
+          <span class="pulse-dot"></span>
+          <span>IDENTITY GATEWAY: <strong>ONLINE</strong></span>
+        </div>
+        <div class="telemetry-item">
+          <i class="fa-solid fa-lock" style="color: var(--accent-cyan); font-size: 0.65rem;"></i>
+          <span>ENCRYPTION: <strong>TLS 1.3 / AES-256</strong></span>
+        </div>
+      </div>
+      <div class="telemetry-group">
+        <a href="register.html" class="telemetry-btn">
+          <i class="fa-solid fa-user-plus"></i> NEW STUDENT REGISTRATION
+        </a>
+      </div>
+    </aside>
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+      <div class="container nav-container">
+        <a href="index.html" class="brand-link">
+          <div class="brand-emblem-wrap">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div class="brand-title-wrap">
+            <span class="brand-main-title">VIT <span class="accent">PORTAL</span></span>
+            <span class="brand-sub-tag">VELLORE INSTITUTE OF TECHNOLOGY</span>
+          </div>
+        </a>
+
+        <nav>
+          <ul class="nav-menu">
+            <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Overview</a></li>
+            <li><a href="verify.html" class="nav-link"><i class="fa-solid fa-shield-halved"></i> Verify Roll No</a></li>
+            <li><a href="register.html" class="nav-link"><i class="fa-solid fa-user-plus"></i> Registration</a></li>
+            <li><a href="admin.html" class="nav-link"><i class="fa-solid fa-user-shield"></i> Admin Panel</a></li>
+          </ul>
+        </nav>
+
+        <div class="nav-actions">
+          <a href="register.html" class="btn-primary btn-sm">
+            <i class="fa-solid fa-id-card"></i> Register
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Auth Form -->
+    <main class="section-spacing">
+      <div class="container">
+        
+        <div class="glass-panel auth-wrapper">
+          
+          <div class="auth-header">
+            <div class="verification-tabs" style="width: 100%; justify-content: center; margin-bottom: 20px;">
+              <button type="button" class="tab-btn active" id="tab-student-login">
+                <i class="fa-solid fa-user-graduate"></i> Student Login
+              </button>
+              <button type="button" class="tab-btn" id="tab-admin-login">
+                <i class="fa-solid fa-shield-halved"></i> Admissions Staff Login
+              </button>
+            </div>
+
+            <h1 class="auth-title" id="login-title">Student Portal Login</h1>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;" id="login-subtext">
+              Sign in with your registered email to access your ID and academic clearances.
+            </p>
+          </div>
+
+          <!-- Student Login Form -->
+          <form id="student-login-form">
+            <div class="form-group">
+              <label for="login-email" class="form-label">Student Email Address</label>
+              <div class="input-with-icon">
+                <input 
+                  type="email" 
+                  id="login-email" 
+                  class="form-control" 
+                  placeholder="e.g. priya.nair2022@vitstudent.ac.in" 
+                  required
+                >
+                <i class="fa-solid fa-envelope field-icon"></i>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="login-password" class="form-label">
+                <span>Account Password</span>
+                <a href="#" id="link-forgot-password" class="footer-link" style="font-size: 0.78rem;">Forgot Password?</a>
+              </label>
+              <div class="input-with-icon">
+                <input 
+                  type="password" 
+                  id="login-password" 
+                  class="form-control" 
+                  placeholder="Enter your password" 
+                  required
+                >
+                <i class="fa-solid fa-lock field-icon"></i>
+                <button type="button" class="toggle-password" data-target="login-password" aria-label="Toggle Password Visibility">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary btn-lg" style="width: 100%; margin-top: 14px;">
+              <i class="fa-solid fa-right-to-bracket"></i> Sign In to Student Portal
+            </button>
+          </form>
+
+          <!-- Admin Login Form (Hidden by default) -->
+          <form id="admin-login-form" style="display: none;">
+            <div class="form-group">
+              <label for="admin-email" class="form-label">Faculty / Administrator Email</label>
+              <div class="input-with-icon">
+                <input 
+                  type="email" 
+                  id="admin-email" 
+                  class="form-control" 
+                  placeholder="e.g. admin@vit.ac.in" 
+                  required
+                >
+                <i class="fa-solid fa-user-shield field-icon"></i>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="admin-password" class="form-label">Administrator Security Key</label>
+              <div class="input-with-icon">
+                <input 
+                  type="password" 
+                  id="admin-password" 
+                  class="form-control" 
+                  placeholder="Enter admin password" 
+                  required
+                >
+                <i class="fa-solid fa-key field-icon"></i>
+                <button type="button" class="toggle-password" data-target="admin-password" aria-label="Toggle Password Visibility">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary btn-lg" style="width: 100%; margin-top: 14px; background: var(--gradient-gold); box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);">
+              <i class="fa-solid fa-shield"></i> Access Admissions Deanery Console
+            </button>
+          </form>
+
+          <!-- Demo Quick Logins Card -->
+          <div class="demo-accounts-card">
+            <div class="demo-title">
+              <i class="fa-solid fa-key"></i> ONE-CLICK EVALUATION LOGINS:
+            </div>
+            <div class="demo-buttons-flex">
+              <button type="button" class="demo-btn" id="btn-demo-student">
+                <i class="fa-solid fa-user-graduate" style="color:var(--status-success);"></i> Demo Student (Priya Nair)
+              </button>
+              <button type="button" class="demo-btn" id="btn-demo-admin">
+                <i class="fa-solid fa-user-shield" style="color:var(--accent-gold-light);"></i> Demo Admin (Dr. Ramanathan)
+              </button>
+            </div>
+          </div>
+
+          <div style="margin-top: 24px; text-align: center; font-size: 0.88rem; color: var(--text-secondary);">
+            Don't have an active student account yet? 
+            <a href="register.html" style="color: var(--accent-cyan); text-decoration: none; font-weight: 600;">
+              Register Roll Number &rarr;
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <span>&copy; 2026 Vellore Institute of Technology. Single-Sign-On Authentication Gateway.</span>
+          <div style="display: flex; gap: 20px;">
+            <a href="index.html" class="footer-link">Home</a>
+            <a href="verify.html" class="footer-link">Verify Roll</a>
+            <a href="register.html" class="footer-link">Register</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Password Reset Modal -->
+  <div class="modal-overlay" id="forgot-password-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Password Reset Dispatch</h3>
+        <button class="modal-close-btn" id="btn-close-forgot-modal">&times;</button>
+      </div>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">
+        Enter your registered email address. A cryptographic recovery token will be transmitted to your institutional mailbox.
+      </p>
+      <form id="forgot-form">
+        <div class="form-group">
+          <label class="form-label">Official Registered Email</label>
+          <div class="input-with-icon">
+            <input type="email" id="reset-email-input" class="form-control" placeholder="e.g. student@vitstudent.ac.in" required>
+            <i class="fa-solid fa-envelope field-icon"></i>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">
+          <i class="fa-solid fa-paper-plane"></i> Send Recovery Token
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/animations.js"></script>
+
+  <!-- Login Page Controller -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // If already logged in, redirect
+      window.VitAuth.redirectIfLoggedIn();
+
+      const tabStudent = document.getElementById('tab-student-login');
+      const tabAdmin = document.getElementById('tab-admin-login');
+      const studentForm = document.getElementById('student-login-form');
+      const adminForm = document.getElementById('admin-login-form');
+      const loginTitle = document.getElementById('login-title');
+      const loginSubtext = document.getElementById('login-subtext');
+
+      // Check role param in URL
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('role') === 'admin') {
+        activateAdminTab();
+      }
+
+      tabStudent.addEventListener('click', activateStudentTab);
+      tabAdmin.addEventListener('click', activateAdminTab);
+
+      function activateStudentTab() {
+        tabStudent.classList.add('active');
+        tabAdmin.classList.remove('active');
+        studentForm.style.display = 'block';
+        adminForm.style.display = 'none';
+        loginTitle.innerText = 'Student Portal Login';
+        loginSubtext.innerText = 'Sign in with your registered email to access your ID and academic clearances.';
+      }
+
+      function activateAdminTab() {
+        tabAdmin.classList.add('active');
+        tabStudent.classList.remove('active');
+        studentForm.style.display = 'none';
+        adminForm.style.display = 'block';
+        loginTitle.innerText = 'Deanery Staff Login';
+        loginSubtext.innerText = 'Authorized admissions officers and registrar staff authentication.';
+      }
+
+      // Password visibility toggle
+      document.querySelectorAll('.toggle-password').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-target');
+          const input = document.getElementById(targetId);
+          if (input) {
+            if (input.type === 'password') {
+              input.type = 'text';
+              btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+            } else {
+              input.type = 'password';
+              btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+            }
+          }
+        });
+      });
+
+      // Quick Demo Autofills
+      document.getElementById('btn-demo-student').addEventListener('click', () => {
+        activateStudentTab();
+        document.getElementById('login-email').value = 'priya.nair2022@vitstudent.ac.in';
+        document.getElementById('login-password').value = 'Student@123';
+        window.showToast('Student credentials filled. Click "Sign In" to proceed.', 'info');
+      });
+
+      document.getElementById('btn-demo-admin').addEventListener('click', () => {
+        activateAdminTab();
+        document.getElementById('admin-email').value = 'admin@vit.ac.in';
+        document.getElementById('admin-password').value = 'VitAdmin#2026!';
+        window.showToast('Administrator credentials filled. Click "Access Deanery Console" to proceed.', 'info');
+      });
+
+      // Handle Student Login Submission
+      studentForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const pass = document.getElementById('login-password').value;
+
+        window.VitAPI.loginStudent(email, pass)
+          .then(user => {
+            window.showToast(`Welcome back, ${user.fullName}!`, 'success');
+            setTimeout(() => {
+              window.location.href = 'dashboard.html';
+            }, 600);
+          })
+          .catch(err => {
+            window.showToast(err.message, 'danger');
+          });
+      });
+
+      // Handle Admin Login Submission
+      adminForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('admin-email').value;
+        const pass = document.getElementById('admin-password').value;
+
+        window.VitAPI.loginAdmin(email, pass)
+          .then(admin => {
+            window.showToast(`Admin Clearance Granted: ${admin.fullName}`, 'success');
+            setTimeout(() => {
+              window.location.href = 'admin.html';
+            }, 600);
+          })
+          .catch(err => {
+            window.showToast(err.message, 'danger');
+          });
+      });
+
+      // Forgot Password Modal
+      const forgotLink = document.getElementById('link-forgot-password');
+      const forgotModal = document.getElementById('forgot-password-modal');
+      const closeForgotModal = document.getElementById('btn-close-forgot-modal');
+      const forgotForm = document.getElementById('forgot-form');
+
+      if (forgotLink && forgotModal) {
+        forgotLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          forgotModal.classList.add('open');
+        });
+      }
+
+      if (closeForgotModal && forgotModal) {
+        closeForgotModal.addEventListener('click', () => {
+          forgotModal.classList.remove('open');
+        });
+      }
+
+      if (forgotForm) {
+        forgotForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const email = document.getElementById('reset-email-input').value;
+          forgotModal.classList.remove('open');
+          window.showToast(`Password recovery link dispatched to ${email}`, 'success');
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
