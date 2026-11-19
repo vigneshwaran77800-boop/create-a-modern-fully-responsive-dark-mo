@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration // VIT Student Portal</title>
+  <meta name="description" content="Student onboarding and roll number claim registration for Vellore Institute of Technology.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Application Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Custom Cursor for Desktop -->
+  <div class="custom-cursor"></div>
+  <div class="cursor-follower"></div>
+
+  <!-- Ambient Glow & Canvas -->
+  <canvas id="ambient-canvas"></canvas>
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-3"></div>
+
+  <div class="app-wrapper">
+
+    <!-- Top Telemetry HUD -->
+    <aside class="telemetry-bar">
+      <div class="telemetry-group">
+        <div class="telemetry-item">
+          <span class="pulse-dot"></span>
+          <span>ONBOARDING PIPELINE: <strong>ACTIVE</strong></span>
+        </div>
+        <div class="telemetry-item">
+          <i class="fa-solid fa-lock" style="color: var(--status-success); font-size: 0.65rem;"></i>
+          <span>ATOMIC SINGLE-CLAIM: <strong>ENFORCED</strong></span>
+        </div>
+      </div>
+      <div class="telemetry-group">
+        <a href="login.html" class="telemetry-btn">
+          <i class="fa-solid fa-right-to-bracket"></i> ALREADY REGISTERED? LOG IN
+        </a>
+      </div>
+    </aside>
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+      <div class="container nav-container">
+        <a href="index.html" class="brand-link">
+          <div class="brand-emblem-wrap">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div class="brand-title-wrap">
+            <span class="brand-main-title">VIT <span class="accent">PORTAL</span></span>
+            <span class="brand-sub-tag">VELLORE INSTITUTE OF TECHNOLOGY</span>
+          </div>
+        </a>
+
+        <nav>
+          <ul class="nav-menu">
+            <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Overview</a></li>
+            <li><a href="verify.html" class="nav-link"><i class="fa-solid fa-shield-halved"></i> Verify Roll No</a></li>
+            <li><a href="register.html" class="nav-link active"><i class="fa-solid fa-user-plus"></i> Registration</a></li>
+            <li><a href="admin.html" class="nav-link"><i class="fa-solid fa-user-shield"></i> Admin Panel</a></li>
+          </ul>
+        </nav>
+
+        <div class="nav-actions">
+          <a href="login.html" class="btn-secondary btn-sm">
+            <i class="fa-solid fa-lock"></i> Login
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Registration Section -->
+    <main class="section-spacing">
+      <div class="container">
+        
+        <div class="glass-panel auth-wrapper">
+          <div class="auth-header">
+            <span class="glass-badge success">
+              <i class="fa-solid fa-id-card"></i> NEW ENROLLMENT
+            </span>
+            <h1 class="auth-title">Student Registration</h1>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; text-align: center;">
+              Claim your pre-approved VIT seat and generate your encrypted Digital Student ID.
+            </p>
+          </div>
+
+          <form id="registration-form">
+            
+            <!-- Roll Number Input with Live Feedback -->
+            <div class="form-group">
+              <label for="reg-roll-number" class="form-label">
+                <span>VIT Roll Number <span style="color:var(--status-danger)">*</span></span>
+                <span class="input-hint">Only Deanery-approved roll numbers allowed</span>
+              </label>
+              <div class="input-with-icon">
+                <input 
+                  type="text" 
+                  id="reg-roll-number" 
+                  class="form-control" 
+                  placeholder="e.g. 21BCE1024" 
+                  maxlength="10" 
+                  required
+                >
+                <i class="fa-solid fa-hashtag field-icon"></i>
+              </div>
+              <div id="roll-live-feedback" class="input-feedback"></div>
+            </div>
+
+            <!-- Full Name -->
+            <div class="form-group">
+              <label for="reg-full-name" class="form-label">
+                <span>Student Full Name <span style="color:var(--status-danger)">*</span></span>
+                <span class="input-hint">As printed on official certificates</span>
+              </label>
+              <div class="input-with-icon">
+                <input 
+                  type="text" 
+                  id="reg-full-name" 
+                  class="form-control" 
+                  placeholder="e.g. Vigneshwaran S." 
+                  required
+                >
+                <i class="fa-solid fa-user field-icon"></i>
+              </div>
+            </div>
+
+            <!-- Email Address -->
+            <div class="form-group">
+              <label for="reg-email" class="form-label">
+                <span>Email Address <span style="color:var(--status-danger)">*</span></span>
+                <span class="input-hint">Personal or @vitstudent.ac.in</span>
+              </label>
+              <div class="input-with-icon">
+                <input 
+                  type="email" 
+                  id="reg-email" 
+                  class="form-control" 
+                  placeholder="e.g. vignesh.s2021@vitstudent.ac.in" 
+                  required
+                >
+                <i class="fa-solid fa-envelope field-icon"></i>
+              </div>
+            </div>
+
+            <!-- Campus & Department Selection -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="reg-campus" class="form-label">Campus Allocation</label>
+                <div class="input-with-icon">
+                  <select id="reg-campus" class="form-control">
+                    <option value="Vellore">VIT Vellore (HQ)</option>
+                    <option value="Chennai">VIT Chennai</option>
+                    <option value="AP">VIT-AP Amaravati</option>
+                    <option value="Bhopal">VIT Bhopal</option>
+                  </select>
+                  <i class="fa-solid fa-location-dot field-icon"></i>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="reg-department" class="form-label">Program / Department</label>
+                <div class="input-with-icon">
+                  <select id="reg-department" class="form-control">
+                    <option value="Computer Science & Engineering">B.Tech CSE</option>
+                    <option value="AI & Machine Learning">B.Tech CSE (AIML)</option>
+                    <option value="Data Science">B.Tech CSE (DS)</option>
+                    <option value="Software Engineering">Integrated M.Tech SE</option>
+                    <option value="Electronics & Communication">B.Tech ECE</option>
+                    <option value="Mechanical Engineering">B.Tech Mechanical</option>
+                  </select>
+                  <i class="fa-solid fa-graduation-cap field-icon"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Password & Confirm Password -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="reg-password" class="form-label">
+                  <span>Create Password <span style="color:var(--status-danger)">*</span></span>
+                </label>
+                <div class="input-with-icon">
+                  <input 
+                    type="password" 
+                    id="reg-password" 
+                    class="form-control" 
+                    placeholder="Min 8 characters" 
+                    required
+                  >
+                  <i class="fa-solid fa-key field-icon"></i>
+                  <button type="button" class="toggle-password" data-target="reg-password" aria-label="Toggle Password Visibility">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                </div>
+                
+                <!-- Password Strength Visual Indicator -->
+                <div class="strength-meter-wrap">
+                  <div class="strength-bars">
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                  </div>
+                  <span id="strength-label" class="strength-label">Password Strength: Min 8 chars</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="reg-confirm-password" class="form-label">
+                  <span>Confirm Password <span style="color:var(--status-danger)">*</span></span>
+                </label>
+                <div class="input-with-icon">
+                  <input 
+                    type="password" 
+                    id="reg-confirm-password" 
+                    class="form-control" 
+                    placeholder="Re-enter password" 
+                    required
+                  >
+                  <i class="fa-solid fa-shield-halved field-icon"></i>
+                  <button type="button" class="toggle-password" data-target="reg-confirm-password" aria-label="Toggle Password Visibility">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Terms & Single-Claim Policy -->
+            <div class="form-group" style="margin-top: 10px;">
+              <label class="checkbox-wrap">
+                <input type="checkbox" id="reg-terms" required checked>
+                <span>
+                  I confirm that I am the authorized holder of this Roll Number. I agree to the VIT Academic Code of Conduct and single-claim cryptographic identity binding.
+                </span>
+              </label>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-primary btn-lg" style="width: 100%; margin-top: 14px;">
+              <i class="fa-solid fa-id-card"></i> Complete Registration &amp; Issue ID
+            </button>
+
+          </form>
+
+          <!-- Quick Test Auto-fill -->
+          <div class="demo-accounts-card">
+            <div class="demo-title">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> EVALUATION HELPER — CLICK TO AUTOFILL APPROVED ROLLS:
+            </div>
+            <div class="demo-buttons-flex">
+              <button type="button" class="demo-btn" onclick="document.getElementById('reg-roll-number').value='21BCE1024'; document.getElementById('reg-full-name').value='Vigneshwaran S.'; document.getElementById('reg-email').value='vignesh.s2021@vitstudent.ac.in'; document.getElementById('reg-password').value='Student@2026!'; document.getElementById('reg-confirm-password').value='Student@2026!'; document.getElementById('reg-roll-number').dispatchEvent(new Event('input'));">
+                Candidate 1 (21BCE1024, Vellore)
+              </button>
+              <button type="button" class="demo-btn" onclick="document.getElementById('reg-roll-number').value='24BCE1102'; document.getElementById('reg-full-name').value='Tanvi Joshi'; document.getElementById('reg-email').value='tanvi.joshi2024@vitstudent.ac.in'; document.getElementById('reg-password').value='Tanvi@Secure2026'; document.getElementById('reg-confirm-password').value='Tanvi@Secure2026'; document.getElementById('reg-roll-number').dispatchEvent(new Event('input'));">
+                Candidate 2 (24BCE1102, Chennai)
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <span>&copy; 2026 Vellore Institute of Technology. Student Admissions Onboarding.</span>
+          <div style="display: flex; gap: 20px;">
+            <a href="index.html" class="footer-link">Home</a>
+            <a href="verify.html" class="footer-link">Verify Roll</a>
+            <a href="login.html" class="footer-link">Login</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- =========================================================================
+       REGISTRATION SUCCESS CELEBRATION MODAL
+       ========================================================================= -->
+  <div class="modal-overlay" id="registration-success-modal">
+    <div class="modal-box">
+      <div class="success-modal-content">
+        <div class="success-icon-animation">
+          <i class="fa-solid fa-check"></i>
+        </div>
+
+        <h3 style="font-family: var(--font-display); font-size: 1.6rem; color: #fff;">
+          Welcome to VIT!
+        </h3>
+
+        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+          Your roll number <strong id="modal-roll-number" style="color: var(--accent-cyan); font-family: var(--font-mono);">21BCE1024</strong> has been securely claimed and permanently locked to candidate <strong id="modal-student-name" style="color: #fff;">Vigneshwaran S.</strong>
+        </p>
+
+        <div class="glass-panel" style="padding: 16px; width: 100%; text-align: left; background: rgba(0,0,0,0.4); font-size: 0.85rem;">
+          <div style="color: var(--status-success); font-weight: 600; margin-bottom: 4px;">
+            <i class="fa-solid fa-shield-check"></i> Cryptographic Digital ID Generated
+          </div>
+          <div style="color: var(--text-muted); font-size: 0.8rem;">
+            Your session is active. You may now access your student dashboard, view your 3D digital ID card, and manage academic clearances.
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; width: 100%; margin-top: 10px;">
+          <a href="dashboard.html" class="btn-primary" style="flex: 1; text-align: center;">
+            <i class="fa-solid fa-id-badge"></i> View My Digital ID &amp; Dashboard <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/register.js"></script>
+
+</body>
+</html>
