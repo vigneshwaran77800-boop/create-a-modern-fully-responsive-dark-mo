@@ -3,899 +3,730 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vigneshwaran // Distributed Systems Architect &amp; Cyber Portfolio</title>
-  <meta name="description" content="Modern responsive dark-mode cyberpunk portfolio with interactive Three.js 3D particle animations, Firebase Firestore name verification, and distributed systems architecture.">
+  <title>VIT Student Portal // Vellore Institute of Technology</title>
+  <meta name="description" content="Official Vellore Institute of Technology (VIT) Student Registration and Cryptographic Roll Number Verification Portal. Powered by Firebase, GSAP, and Lenis.">
 
-  <!-- Google Fonts -->
+  <!-- Favicon / Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-  <!-- Application Stylesheet -->
+  <!-- Core Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- Three.js Interactive 3D Canvas Background -->
-  <canvas id="three-canvas"></canvas>
+  <!-- =========================================================================
+       PAGE LOADING SCREEN
+       ========================================================================= -->
+  <div class="loader-screen" id="page-loader">
+    <div class="loader-crest">
+      <div class="loader-crest-ring"></div>
+      <span class="loader-crest-inner">VIT</span>
+    </div>
+    <div class="loader-text">Initializing Verification Engine</div>
+    <div class="loader-bar">
+      <div class="loader-progress"></div>
+    </div>
+  </div>
 
-  <div class="site-wrapper">
+  <!-- Custom Cursor for Desktop -->
+  <div class="custom-cursor"></div>
+  <div class="cursor-follower"></div>
+
+  <!-- Interactive Ambient Background Canvas & Glow Orbs -->
+  <canvas id="ambient-canvas"></canvas>
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-2"></div>
+  <div class="ambient-orb ambient-orb-3"></div>
+
+  <!-- Mobile Drawer Backdrop & Menu -->
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+  <aside class="mobile-nav-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="brand-link">
+        <div class="brand-emblem-wrap">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div class="brand-title-wrap">
+          <span class="brand-main-title">VIT <span class="accent">PORTAL</span></span>
+          <span class="brand-sub-tag">VELLORE INSTITUTE OF TECHNOLOGY</span>
+        </div>
+      </div>
+      <button class="drawer-close" id="drawer-close-btn" aria-label="Close Navigation">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <ul class="drawer-links">
+      <li><a href="index.html" class="drawer-link active"><i class="fa-solid fa-house"></i> Home</a></li>
+      <li><a href="verify.html" class="drawer-link"><i class="fa-solid fa-shield-halved"></i> Verify Roll Number</a></li>
+      <li><a href="register.html" class="drawer-link"><i class="fa-solid fa-user-plus"></i> Student Registration</a></li>
+      <li><a href="login.html" class="drawer-link"><i class="fa-solid fa-lock"></i> Student &amp; Staff Login</a></li>
+      <li><a href="admin.html" class="drawer-link"><i class="fa-solid fa-user-shield"></i> Deanery Admin Panel</a></li>
+    </ul>
+
+    <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-subtle);">
+      <a href="register.html" class="btn-primary" style="width: 100%; text-align: center;">
+        <i class="fa-solid fa-id-card"></i> Register Candidate
+      </a>
+    </div>
+  </aside>
+
+  <div class="app-wrapper">
 
     <!-- Top Telemetry HUD Bar -->
-    <aside class="telemetry-hud">
-      <div class="hud-group priority">
-        <div class="hud-item">
-          <span class="hud-pulse"></span>
-          <span>NODE: <strong>SYD-02 [ONLINE]</strong></span>
+    <aside class="telemetry-bar">
+      <div class="telemetry-group">
+        <div class="telemetry-item">
+          <span class="pulse-dot"></span>
+          <span>VIT DEANERY CLOUD: <strong>ONLINE [SYD-01]</strong></span>
         </div>
-        <div class="hud-item">
-          <i class="fa-solid fa-bolt" style="color: var(--accent-red-bright); font-size: 0.65rem;"></i>
-          <span>RTT: <strong>14ms</strong></span>
+        <div class="telemetry-item">
+          <i class="fa-solid fa-bolt" style="color: var(--accent-gold); font-size: 0.65rem;"></i>
+          <span>VERIFICATION LATENCY: <strong>12ms</strong></span>
         </div>
-        <div class="hud-item" id="hud-firebase-status" style="cursor: pointer;" title="Click to view Firebase Configuration">
-          <span class="hud-pulse red"></span>
-          <span>FIRESTORE: <strong>SANDBOX</strong></span>
+        <div class="telemetry-item">
+          <i class="fa-solid fa-lock" style="color: var(--accent-cyan); font-size: 0.65rem;"></i>
+          <span>ATOMIC LOCK: <strong>SHA-256 ACTIVE</strong></span>
         </div>
       </div>
 
-      <div class="hud-group">
-        <div class="hud-item">
-          <i class="fa-solid fa-lock" style="color: var(--accent-cyan); font-size: 0.65rem;"></i>
-          <span>SECURITY: <strong>AES-256-GCM</strong></span>
-        </div>
-        <button class="hud-btn" id="btn-open-firebase-config" title="Configure Cloud Firebase credentials">
-          <i class="fa-solid fa-database"></i> FIREBASE CONFIG
+      <div class="telemetry-group">
+        <button class="telemetry-btn" id="btn-toggle-demo-info" onclick="alert('DEMO CREDENTIALS:\n\n1. Admin Portal: admin@vit.ac.in / VitAdmin#2026!\n2. Registered Student: priya.nair2022@vitstudent.ac.in / Student@123\n3. Approved Unregistered Roll: 21BCE1024 (CSE, Vellore)\n4. Approved Unregistered Roll: 24BCE1102 (AIML, Chennai)')">
+          <i class="fa-solid fa-key"></i> DEMO CREDENTIALS
         </button>
-        <button class="hud-btn" id="toggle-audio-btn" title="Toggle procedural cyber audio synthesis">
-          <i class="fa-solid fa-volume-xmark"></i> AUDIO: OFF
-        </button>
+        <span class="telemetry-item">
+          <i class="fa-solid fa-building-columns"></i>
+          <span>CAMPUSES: <strong>VELLORE • CHENNAI • AP • BHOPAL</strong></span>
+        </span>
       </div>
     </aside>
 
-    <!-- Main Navigation Header -->
+    <!-- Main Navigation Bar -->
     <header class="site-header">
-      <a href="#hero" class="brand-logo">
-        <div class="brand-emblem">
-          <i class="fa-solid fa-shield-halved"></i>
-        </div>
-        <div class="brand-text">
-          <span class="brand-title">VIGNESHWARAN<span class="red">.DEV</span></span>
-          <span class="brand-tag">// DISTRIBUTED SYSTEMS CORE</span>
-        </div>
-      </a>
-
-      <nav>
-        <ul class="nav-links" id="nav-links">
-          <li><a href="#hero" class="nav-link"><span class="nav-idx">01</span>OVERVIEW</a></li>
-          <li><a href="#architecture" class="nav-link"><span class="nav-idx">02</span>ARCHITECTURE</a></li>
-          <li><a href="#projects" class="nav-link"><span class="nav-idx">03</span>PROJECTS</a></li>
-          <li><a href="#skills" class="nav-link"><span class="nav-idx">04</span>MATRIX</a></li>
-          <li><a href="#registry" class="nav-link"><span class="nav-idx">05</span>REGISTRY</a></li>
-          <li><a href="#terminal-section" class="nav-link"><span class="nav-idx">06</span>TERMINAL</a></li>
-        </ul>
-      </nav>
-
-      <div class="nav-actions">
-        <a href="#registry" class="btn-cyber btn-sm">
-          <i class="fa-solid fa-id-card"></i> PROVISION ID
+      <div class="container nav-container">
+        <a href="index.html" class="brand-link">
+          <div class="brand-emblem-wrap">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div class="brand-title-wrap">
+            <span class="brand-main-title">VIT <span class="accent">STUDENT PORTAL</span></span>
+            <span class="brand-sub-tag">VELLORE INSTITUTE OF TECHNOLOGY</span>
+          </div>
         </a>
-        <button class="nav-toggle-btn" id="nav-toggle" aria-label="Toggle navigation menu">
-          <i class="fa-solid fa-bars"></i>
-        </button>
+
+        <nav>
+          <ul class="nav-menu">
+            <li><a href="index.html" class="nav-link active"><i class="fa-solid fa-house"></i> Overview</a></li>
+            <li><a href="verify.html" class="nav-link"><i class="fa-solid fa-shield-halved"></i> Verify Roll No</a></li>
+            <li><a href="register.html" class="nav-link"><i class="fa-solid fa-user-plus"></i> Registration</a></li>
+            <li><a href="#workflow" class="nav-link"><i class="fa-solid fa-diagram-project"></i> Workflow</a></li>
+            <li><a href="admin.html" class="nav-link"><i class="fa-solid fa-user-shield"></i> Admin Roster</a></li>
+          </ul>
+        </nav>
+
+        <div class="nav-actions">
+          <div id="nav-user-area" style="display: flex; align-items: center; gap: 10px;">
+            <!-- Rendered by auth.js -->
+          </div>
+          <button class="mobile-toggle" id="mobile-nav-toggle" aria-label="Open Mobile Menu">
+            <i class="fa-solid fa-bars-staggered"></i>
+          </button>
+        </div>
       </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="main-content">
+    <!-- Main Body Content -->
+    <main>
 
-      <!-- =================================================================
-           HERO SECTION
-           ================================================================= -->
-      <section id="hero" class="hero-section">
+      <!-- =======================================================================
+           HERO SECTION WITH EMBEDDED REAL-TIME VERIFIER
+           ======================================================================= -->
+      <section class="hero-section">
         <div class="container">
           <div class="hero-grid">
             
+            <!-- Left: Hero Headline & CTAs -->
             <div class="hero-content">
-              <div class="hero-status-pill">
-                <span class="hud-pulse"></span>
-                <span>PROTOCOL LEVEL 5 &bull; DISTRIBUTED ARCHITECT</span>
+              <div class="hero-badge-wrap">
+                <span class="glass-badge">
+                  <i class="fa-solid fa-award"></i> NAAC A++ ACCREDITED INSTITUTION
+                </span>
+                <span class="glass-badge gold">
+                  <i class="fa-solid fa-circle-check"></i> DEANERY APPROVED
+                </span>
               </div>
 
-              <h1 class="hero-headline">
-                ENGINEERING <span class="neon-red">FAULT-TOLERANT</span> DISTRIBUTED ECOSYSTEMS.
+              <h1 class="hero-heading">
+                Next-Gen <span class="gradient-text">Student Onboarding</span> &amp; Roll Verification
               </h1>
 
-              <p class="hero-lead">
-                Specialized in <strong>ultra-low-latency liquidation engines</strong>, 
-                <strong>autonomous AI agent swarms</strong>, and <strong>offline-first CRDT synchronization</strong>. 
-                Designing high-throughput platforms where sub-millisecond deterministic consistency is mission critical.
+              <p class="hero-desc">
+                The centralized identity &amp; credential registry for Vellore Institute of Technology.
+                Verify student eligibility, enforce atomic single-claim seat registrations, and provision
+                cryptographic Digital Student IDs.
               </p>
 
               <div class="hero-cta-group">
-                <a href="#registry" class="btn-cyber">
-                  <i class="fa-solid fa-bolt"></i> INITIATE HANDSHAKE
+                <a href="register.html" class="btn-primary btn-lg">
+                  <i class="fa-solid fa-user-plus"></i> Register as Student
                 </a>
-                <a href="#architecture" class="btn-cyber-outline">
-                  <i class="fa-solid fa-microchip"></i> EXPLORE ARCHITECTURE
+                <a href="verify.html" class="btn-secondary btn-lg">
+                  <i class="fa-solid fa-shield-halved"></i> Roll Verification Portal
                 </a>
               </div>
 
-              <div class="hero-metrics">
-                <div class="metric-item">
-                  <div class="metric-value">1.4M<span class="accent">+</span></div>
-                  <div class="metric-label">OPS / SEC Peak Throughput</div>
+              <div class="hero-tags">
+                <div class="hero-tag-item">
+                  <i class="fa-solid fa-shield-cat"></i> Zero Duplicate Guarantee
                 </div>
-                <div class="metric-item">
-                  <div class="metric-value">&lt; 850<span class="accent">&#181;s</span></div>
-                  <div class="metric-label">P99 Liquidation Latency</div>
+                <div class="hero-tag-item">
+                  <i class="fa-solid fa-qrcode"></i> Dynamic QR Credentials
                 </div>
-                <div class="metric-item">
-                  <div class="metric-value">99.999<span class="accent">%</span></div>
-                  <div class="metric-label">Fault-Tolerant Uptime</div>
+                <div class="hero-tag-item">
+                  <i class="fa-solid fa-cloud"></i> Firebase Cloud Engine
                 </div>
               </div>
             </div>
 
-            <!-- Hero Interactive Terminal Card -->
-            <div class="hero-terminal-card cyber-corners">
-              <div class="terminal-header">
-                <div class="terminal-dots">
-                  <span class="terminal-dot red"></span>
-                  <span class="terminal-dot yellow"></span>
-                  <span class="terminal-dot green"></span>
-                </div>
-                <div class="terminal-title">kernel_telemetry.sh &bull; v4.19</div>
-                <div class="terminal-badge">LIVE REPL</div>
+            <!-- Right: Instant Quick Roll Verifier Card -->
+            <div class="glass-panel quick-verify-card tilt-card">
+              <div class="card-header-badge">
+                <span class="glass-badge success">
+                  <i class="fa-solid fa-bolt"></i> INSTANT LOOKUP
+                </span>
+                <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">
+                  FIRESTORE VERIFIED
+                </span>
               </div>
 
-              <div class="terminal-body" id="hero-terminal-body">
-                <div class="terminal-line"><span class="terminal-green">[OK]</span> Initializing Quantum-Resistant Kernel...</div>
-                <div class="terminal-line"><span class="terminal-green">[OK]</span> Three.js 3D WebGL Particle Engine bound to DOM</div>
-                <div class="terminal-line"><span class="terminal-green">[OK]</span> Connecting Firestore distributed state channels...</div>
-                <div class="terminal-line"><span class="terminal-cyan">[INFO]</span> Consensus quorum active across 7 partition nodes</div>
-                <div class="terminal-line"><span class="terminal-dim">// Type "help" or "verify &lt;handle&gt;" below to interact:</span></div>
-              </div>
-
-              <div style="padding: 0 1.25rem 1.25rem 1.25rem;">
-                <div class="terminal-input-row">
-                  <span class="terminal-prefix">></span>
-                  <input type="text" id="hero-terminal-input" class="terminal-prompt-input" placeholder="Type command (e.g. 'status', 'verify vortex', 'projects')..." autocomplete="off" spellcheck="false">
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      <!-- =================================================================
-           ARCHITECTURE & PHILOSOPHY SECTION
-           ================================================================= -->
-      <section id="architecture">
-        <div class="container">
-          <div class="section-header">
-            <div class="section-tag"><i class="fa-solid fa-sitemap"></i> CORE PRINCIPLES</div>
-            <h2 class="section-title">SYSTEM <span class="glow">ARCHITECTURE</span> PHILOSOPHY</h2>
-            <p class="section-desc">
-              Building resilient software requires mathematical rigor, deterministic state machines, and defensive zero-trust boundaries at every tier.
-            </p>
-          </div>
-
-          <div class="arch-grid">
-            <div class="glass-card cyber-corners">
-              <div class="arch-icon-wrap">
-                <i class="fa-solid fa-network-wired"></i>
-              </div>
-              <h3 class="arch-title">Distributed State Engines</h3>
-              <p class="arch-desc">
-                Decentralized consensus topologies utilizing Raft and Paxos variants. Eliminating single points of failure with zero split-brain exposure under partition strain.
+              <h2 class="quick-card-title">Roll Number Clearance Check</h2>
+              <p class="quick-card-sub">
+                Check whether a VIT Roll Number is approved for onboarding or already claimed.
               </p>
-              <ul class="arch-spec-list">
-                <li><i class="fa-solid fa-check"></i> Monotonic State Transitions</li>
-                <li><i class="fa-solid fa-check"></i> Sub-millisecond Quorum Vote</li>
-                <li><i class="fa-solid fa-check"></i> High-Throughput Log Compaction</li>
-              </ul>
-            </div>
 
-            <div class="glass-card cyber-corners">
-              <div class="arch-icon-wrap">
-                <i class="fa-solid fa-shield-virus"></i>
-              </div>
-              <h3 class="arch-title">Zero-Trust Cryptography</h3>
-              <p class="arch-desc">
-                Mutual TLS, hardware-attested WebAuthn tokens, and post-quantum lattice-based key encapsulation to ensure immutable identity verification.
-              </p>
-              <ul class="arch-spec-list">
-                <li><i class="fa-solid fa-check"></i> ML-KEM Kyber-1024 Compliance</li>
-                <li><i class="fa-solid fa-check"></i> Hardware FIDO2 Authentications</li>
-                <li><i class="fa-solid fa-check"></i> Ephemeral Microsegmentation</li>
-              </ul>
-            </div>
-
-            <div class="glass-card cyber-corners">
-              <div class="arch-icon-wrap">
-                <i class="fa-solid fa-brain"></i>
-              </div>
-              <h3 class="arch-title">Autonomous AI Mesh</h3>
-              <p class="arch-desc">
-                Dynamic multi-agent swarm orchestration. Autonomous negotiation, state vector synchronization, and continuous distributed feedback loops.
-              </p>
-              <ul class="arch-spec-list">
-                <li><i class="fa-solid fa-check"></i> 120+ Concurrent Agent Nodes</li>
-                <li><i class="fa-solid fa-check"></i> Vector Memory Sharding</li>
-                <li><i class="fa-solid fa-check"></i> Self-Healing Agent Quorums</li>
-              </ul>
-            </div>
-
-            <div class="glass-card cyber-corners">
-              <div class="arch-icon-wrap">
-                <i class="fa-solid fa-rotate"></i>
-              </div>
-              <h3 class="arch-title">Deterministic CRDTs</h3>
-              <p class="arch-desc">
-                Offline-first data structures guaranteeing mathematical convergence without central coordinator round-trips.
-              </p>
-              <ul class="arch-spec-list">
-                <li><i class="fa-solid fa-check"></i> Conflict-Free Invariant Guarantees</li>
-                <li><i class="fa-solid fa-check"></i> IndexedDB Client Persistence</li>
-                <li><i class="fa-solid fa-check"></i> Cryptographic Merkle Proofs</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Interactive Pipeline Visualizer -->
-          <div class="pipeline-visualizer cyber-corners">
-            <div class="pipeline-header">
-              <div class="pipeline-title">
-                <i class="fa-solid fa-diagram-project" style="color: var(--accent-red-bright); margin-right: 0.5rem;"></i>
-                REAL-TIME DATA INGESTION &amp; LIQUIDATION PIPELINE
-              </div>
-              <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-green);">
-                <i class="fa-solid fa-circle-dot"></i> PIPELINE NOMINAL
-              </div>
-            </div>
-
-            <div class="pipeline-flow">
-              <div class="flow-node">
-                <div class="flow-node-icon"><i class="fa-solid fa-laptop-code"></i></div>
-                <div class="flow-node-title">Client Ingress</div>
-                <div class="flow-node-sub">TLS 1.3 / gRPC-Web</div>
-              </div>
-              <div class="flow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-
-              <div class="flow-node">
-                <div class="flow-node-icon"><i class="fa-solid fa-server"></i></div>
-                <div class="flow-node-title">Edge Gateway</div>
-                <div class="flow-node-sub">Zero-Trust Auth Token</div>
-              </div>
-              <div class="flow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-
-              <div class="flow-node">
-                <div class="flow-node-icon"><i class="fa-solid fa-fire-burner"></i></div>
-                <div class="flow-node-title">Liquidation Core</div>
-                <div class="flow-node-sub">&lt; 850&#181;s Risk Engine</div>
-              </div>
-              <div class="flow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-
-              <div class="flow-node">
-                <div class="flow-node-icon"><i class="fa-solid fa-database"></i></div>
-                <div class="flow-node-title">Firestore Cloud</div>
-                <div class="flow-node-sub">Global Replication</div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- =================================================================
-           FLAGSHIP PROJECTS SECTION
-           ================================================================= -->
-      <section id="projects">
-        <div class="container">
-          <div class="section-header">
-            <div class="section-tag"><i class="fa-solid fa-folder-open"></i> PROVEN IMPLEMENTATIONS</div>
-            <h2 class="section-title">FLAGSHIP <span class="glow">SYSTEMS</span> &amp; PROJECTS</h2>
-            <p class="section-desc">
-              Production-grade software architectures operating under extreme throughput, real-time cryptographic constraints, and high volatility.
-            </p>
-          </div>
-
-          <div class="projects-filter-bar">
-            <button class="filter-btn active" data-filter="all">ALL ARCHITECTURES</button>
-            <button class="filter-btn" data-filter="ai">AUTONOMOUS AI</button>
-            <button class="filter-btn" data-filter="fintech">FINTECH &amp; LIQUIDATION</button>
-            <button class="filter-btn" data-filter="crdt">OFFLINE-FIRST CRDT</button>
-            <button class="filter-btn" data-filter="crypto">CRYPTOGRAPHY</button>
-          </div>
-
-          <div class="projects-grid">
-            
-            <!-- Project 1: Autonomous AI Ecosystem -->
-            <div class="project-card cyber-corners" data-category="ai">
-              <div>
-                <div class="project-top-row">
-                  <span class="project-badge">ACTIVE &bull; V3.4</span>
-                  <span class="project-idx">01</span>
-                </div>
-                <h3 class="project-title">Autonomous AI Multi-Agent Mesh</h3>
-                <p class="project-desc">
-                  Decentralized multi-agent swarm architecture orchestrating 120+ autonomous LLM nodes with peer-to-peer consensus, dynamic vector routing, and self-healing memory partitions.
-                </p>
-              </div>
-
-              <div>
-                <div class="project-metrics-pill">
-                  <span class="metric-label">Execution Speed:</span>
-                  <span class="metric-val">38ms / tool handoff</span>
-                </div>
-
-                <div class="project-tech-tags">
-                  <span class="tech-tag">Rust</span>
-                  <span class="tech-tag">Python</span>
-                  <span class="tech-tag">WebSockets</span>
-                  <span class="tech-tag">Three.js</span>
-                  <span class="tech-tag">Firestore</span>
-                </div>
-
-                <div class="project-actions">
-                  <button class="btn-cyber btn-sm" data-project-trigger="ai-mesh">
-                    <i class="fa-solid fa-chart-line"></i> SYSTEM SPECS
-                  </button>
-                  <a href="#terminal-section" class="btn-cyber-outline btn-sm">
-                    <i class="fa-solid fa-terminal"></i> CLI DEMO
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Project 2: High-Frequency Liquidation Engine -->
-            <div class="project-card cyber-corners" data-category="fintech">
-              <div>
-                <div class="project-top-row">
-                  <span class="project-badge">ENTERPRISE CORE</span>
-                  <span class="project-idx">02</span>
-                </div>
-                <h3 class="project-title">Ultra-Low-Latency Liquidation Engine</h3>
-                <p class="project-desc">
-                  High-frequency deterministic risk assessment and automated position unwind engine engineered to operate under extreme volatility in decentralized derivatives markets.
-                </p>
-              </div>
-
-              <div>
-                <div class="project-metrics-pill">
-                  <span class="metric-label">P99 Engine Latency:</span>
-                  <span class="metric-val">&lt; 850 microseconds</span>
-                </div>
-
-                <div class="project-tech-tags">
-                  <span class="tech-tag">C++20</span>
-                  <span class="tech-tag">Go</span>
-                  <span class="tech-tag">Kafka</span>
-                  <span class="tech-tag">gRPC</span>
-                  <span class="tech-tag">TimescaleDB</span>
-                </div>
-
-                <div class="project-actions">
-                  <button class="btn-cyber btn-sm" data-project-trigger="liquidation-engine">
-                    <i class="fa-solid fa-chart-line"></i> SYSTEM SPECS
-                  </button>
-                  <a href="#terminal-section" class="btn-cyber-outline btn-sm">
-                    <i class="fa-solid fa-terminal"></i> CLI DEMO
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Project 3: Offline-First CRDT Invoicing System -->
-            <div class="project-card cyber-corners" data-category="crdt">
-              <div>
-                <div class="project-top-row">
-                  <span class="project-badge">EDGE REPLICATION</span>
-                  <span class="project-idx">03</span>
-                </div>
-                <h3 class="project-title">Offline-First CRDT Invoicing Platform</h3>
-                <p class="project-desc">
-                  Cryptographically signed peer-to-peer ledger synchronizer operating without internet connectivity, auto-resolving conflict states via monotonic semi-lattices upon reconnect.
-                </p>
-              </div>
-
-              <div>
-                <div class="project-metrics-pill">
-                  <span class="metric-label">Conflict Resolution:</span>
-                  <span class="metric-val">100% Deterministic</span>
-                </div>
-
-                <div class="project-tech-tags">
-                  <span class="tech-tag">TypeScript</span>
-                  <span class="tech-tag">IndexedDB</span>
-                  <span class="tech-tag">WebRTC</span>
-                  <span class="tech-tag">Ed25519</span>
-                  <span class="tech-tag">Firestore</span>
-                </div>
-
-                <div class="project-actions">
-                  <button class="btn-cyber btn-sm" data-project-trigger="crdt-invoicing">
-                    <i class="fa-solid fa-chart-line"></i> SYSTEM SPECS
-                  </button>
-                  <a href="#registry" class="btn-cyber-outline btn-sm">
-                    <i class="fa-solid fa-database"></i> TEST SYNC
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Project 4: Quantum-Resistant Identity Authenticator -->
-            <div class="project-card cyber-corners" data-category="crypto">
-              <div>
-                <div class="project-top-row">
-                  <span class="project-badge">POST-QUANTUM</span>
-                  <span class="project-idx">04</span>
-                </div>
-                <h3 class="project-title">Quantum-Resistant Identity Authenticator</h3>
-                <p class="project-desc">
-                  Lattice-based key encapsulation mechanism (ML-KEM Kyber-1024) integrated with WebAuthn hardware biometric security keys for zero-trust identity attestation.
-                </p>
-              </div>
-
-              <div>
-                <div class="project-metrics-pill">
-                  <span class="metric-label">Security Standard:</span>
-                  <span class="metric-val">NIST PQC Level 5</span>
-                </div>
-
-                <div class="project-tech-tags">
-                  <span class="tech-tag">WebAssembly</span>
-                  <span class="tech-tag">Kyber-1024</span>
-                  <span class="tech-tag">WebAuthn</span>
-                  <span class="tech-tag">Firebase Auth</span>
-                </div>
-
-                <div class="project-actions">
-                  <button class="btn-cyber btn-sm" data-project-trigger="quantum-auth">
-                    <i class="fa-solid fa-chart-line"></i> SYSTEM SPECS
-                  </button>
-                  <a href="#registry" class="btn-cyber-outline btn-sm">
-                    <i class="fa-solid fa-fingerprint"></i> VERIFY ID
-                  </a>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      <!-- =================================================================
-           TECH MATRIX SECTION
-           ================================================================= -->
-      <section id="skills">
-        <div class="container">
-          <div class="section-header">
-            <div class="section-tag"><i class="fa-solid fa-microchip"></i> COMPETENCY RADAR</div>
-            <h2 class="section-title">TECHNICAL <span class="glow">MATRIX</span> &amp; STACK</h2>
-            <p class="section-desc">
-              Engineered with modern toolchains for maximum memory safety, concurrency, and real-time responsiveness.
-            </p>
-          </div>
-
-          <div class="skills-grid">
-            <div class="skill-category-card cyber-corners">
-              <div class="skill-cat-title">
-                <i class="fa-solid fa-code"></i> Core Systems Languages
-              </div>
-              <div class="skill-items-list">
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">Rust / Concurrency</span><span class="skill-pct">96%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 96%;"></div></div>
-                </div>
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">Go (Golang) / Microservices</span><span class="skill-pct">94%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 94%;"></div></div>
-                </div>
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">C++20 / Low Latency</span><span class="skill-pct">89%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 89%;"></div></div>
-                </div>
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">TypeScript (ESNext)</span><span class="skill-pct">98%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 98%;"></div></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="skill-category-card cyber-corners">
-              <div class="skill-cat-title">
-                <i class="fa-solid fa-server"></i> Distributed Infrastructure
-              </div>
-              <div class="skill-items-list">
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">Kafka &amp; Event Streams</span><span class="skill-pct">95%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 95%;"></div></div>
-                </div>
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">Kubernetes &amp; Docker</span><span class="skill-pct">92%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 92%;"></div></div>
-                </div>
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">Redis Enterprise Cluster</span><span class="skill-pct">93%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 93%;"></div></div>
-                </div>
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">WebSockets &amp; WebRTC</span><span class="skill-pct">91%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 91%;"></div></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="skill-category-card cyber-corners">
-              <div class="skill-cat-title">
-                <i class="fa-solid fa-cube"></i> 3D WebGL &amp; Interface
-              </div>
-              <div class="skill-items-list">
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">Three.js Particle Engines</span><span class="skill-pct">95%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 95%;"></div></div>
-                </div>
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">GLSL Shaders &amp; WebGL2</span><span class="skill-pct">87%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 87%;"></div></div>
-                </div>
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">Glassmorphic Modern UI</span><span class="skill-pct">97%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 97%;"></div></div>
-                </div>
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">Web Audio API Synthesis</span><span class="skill-pct">88%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 88%;"></div></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="skill-category-card cyber-corners">
-              <div class="skill-cat-title">
-                <i class="fa-solid fa-cloud"></i> Cloud &amp; Persistence
-              </div>
-              <div class="skill-items-list">
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">Firebase Firestore &amp; Auth</span><span class="skill-pct">96%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 96%;"></div></div>
-                </div>
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">PostgreSQL &amp; pgvector</span><span class="skill-pct">93%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 93%;"></div></div>
-                </div>
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">CRDT Monotonic Stores</span><span class="skill-pct">90%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 90%;"></div></div>
-                </div>
-                <div class="skill-row">
-                  <div class="skill-info"><span class="skill-name">IndexedDB Edge Storage</span><span class="skill-pct">92%</span></div>
-                  <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 92%;"></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- =================================================================
-           USER REGISTRATION & NAME VERIFICATION PORTAL SECTION
-           (Primary Interactive Requirement)
-           ================================================================= -->
-      <section id="registry" class="registry-section">
-        <div class="container">
-          <div class="section-header">
-            <div class="section-tag"><i class="fa-solid fa-key"></i> IDENTITY &amp; FIRESTORE INTEGRATION</div>
-            <h2 class="section-title">CRYPTOGRAPHIC <span class="glow">REGISTRATION</span> &amp; VERIFICATION</h2>
-            <p class="section-desc">
-              Provision your developer handle into the decentralized registry. Powered by real-time Firebase Firestore queries to instantly verify handle availability without conflicts.
-            </p>
-          </div>
-
-          <div class="registry-container-grid">
-            
-            <!-- Registration Form Card -->
-            <div class="portal-box cyber-corners">
-              <div class="portal-header">
-                <div class="portal-title">
-                  <i class="fa-solid fa-id-badge"></i>
-                  <span>IDENTITY PROVISIONING PORTAL</span>
-                </div>
-                <div class="portal-subtitle">
-                  Real-time Firebase Firestore handle validation engine.
-                </div>
-              </div>
-
-              <form id="registration-form">
-                
-                <!-- Name / Handle Input with Interactive Verification -->
-                <div class="form-group">
-                  <label class="form-label" for="reg-name">
-                    <span>CODENAME / DEVELOPER HANDLE <span class="req">*</span></span>
-                    <span style="font-size: 0.68rem; color: var(--accent-cyan);">[INSTANT FIRESTORE CHECK]</span>
-                  </label>
-
-                  <div class="input-cyber-wrapper">
-                    <span class="input-cyber-icon"><i class="fa-solid fa-terminal"></i></span>
+              <form id="hero-quick-verify-form">
+                <div class="verify-input-wrap">
+                  <div class="verify-input-group">
                     <input 
                       type="text" 
-                      id="reg-name" 
-                      class="input-cyber" 
-                      placeholder="e.g. quantum_coder, vortex_core, neo..." 
-                      autocomplete="off" 
-                      required
+                      id="hero-roll-input" 
+                      class="verify-text-input" 
+                      placeholder="e.g. 21BCE1024" 
+                      maxlength="10" 
+                      autocomplete="off"
                     >
-                    <button type="button" class="btn-verify-trigger" id="btn-manual-verify">
-                      <i class="fa-solid fa-magnifying-glass"></i> VERIFY
-                    </button>
-                  </div>
-
-                  <!-- Instant Name Verification Status Banner -->
-                  <div id="verification-status" class="verification-status-banner idle">
-                    <i class="fa-solid fa-terminal"></i>
-                    <span>Awaiting handle input...</span>
+                    <i class="fa-solid fa-id-card-clip verify-input-icon"></i>
                   </div>
                 </div>
 
-                <!-- Passkey / Password Input -->
-                <div class="form-group">
-                  <label class="form-label" for="reg-password">
-                    <span>SECURITY PASSKEY / PASSWORD <span class="req">*</span></span>
-                    <span style="font-size: 0.68rem; color: var(--text-muted);">&gt;= 6 Chars</span>
-                  </label>
-
-                  <div class="input-cyber-wrapper">
-                    <span class="input-cyber-icon"><i class="fa-solid fa-lock"></i></span>
-                    <input 
-                      type="password" 
-                      id="reg-password" 
-                      class="input-cyber" 
-                      placeholder="Enter secure cryptographic passkey..." 
-                      autocomplete="new-password" 
-                      required
-                    >
-                  </div>
+                <div class="sample-rolls-container">
+                  <span class="sample-rolls-label">TEST SAMPLES:</span>
+                  <button type="button" class="sample-roll-chip" data-roll="21BCE1024" title="Approved Unregistered">21BCE1024 (CSE)</button>
+                  <button type="button" class="sample-roll-chip" data-roll="20BCE2001" title="Already Registered">20BCE2001 (Registered)</button>
+                  <button type="button" class="sample-roll-chip" data-roll="24BCE1102" title="Approved Freshman">24BCE1102 (Chennai)</button>
+                  <button type="button" class="sample-roll-chip" data-roll="99XYZ9999" title="Invalid Roll">99XYZ9999 (Invalid)</button>
                 </div>
 
-                <!-- Access Clearance Role Selection -->
-                <div class="form-group">
-                  <label class="form-label" for="reg-role">
-                    <span>SECURITY CLEARANCE &bull; ROLE ASSIGNMENT</span>
-                  </label>
-
-                  <div class="input-cyber-wrapper">
-                    <span class="input-cyber-icon"><i class="fa-solid fa-shield-halved"></i></span>
-                    <select id="reg-role" class="input-cyber input-cyber-select">
-                      <option value="Systems Architect">Level 5 &bull; Distributed Systems Architect</option>
-                      <option value="Autonomous AI Engineer">Level 4 &bull; Autonomous AI Engineer</option>
-                      <option value="Liquidation Core Dev">Level 4 &bull; Liquidation Core Developer</option>
-                      <option value="Security Protocol Lead">Level 5 &bull; Security &amp; Cryptography Lead</option>
-                      <option value="Infrastructure Operator">Level 3 &bull; Infrastructure Operator</option>
-                      <option value="Developer Auditor">Level 2 &bull; External Systems Auditor</option>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="btn-cyber btn-full" id="reg-submit-btn">
-                  <i class="fa-solid fa-id-badge"></i> PROVISION CYBER IDENTITY
+                <button type="submit" class="btn-primary" style="width: 100%;">
+                  <i class="fa-solid fa-magnifying-glass"></i> Check Allocation Status
                 </button>
-
               </form>
-            </div>
 
-            <!-- Verified Registry Roster View -->
-            <div class="registry-roster-box cyber-corners">
-              <div class="roster-header">
-                <div class="roster-title">
-                  <i class="fa-solid fa-list-check" style="color: var(--accent-red-bright); margin-right: 0.5rem;"></i>
-                  DATABASE IDENTITY REGISTRY
-                </div>
-                <div class="roster-count" id="roster-count">4 IDENTITIES</div>
-              </div>
-
-              <input 
-                type="text" 
-                id="roster-search" 
-                class="roster-search-input" 
-                placeholder="Search registered handles, roles, or tokens..."
-              >
-
-              <div class="roster-list" id="roster-list">
-                <!-- Dynamically populated via js/firebase-service.js -->
-              </div>
-
-              <div style="margin-top: 1.25rem; padding-top: 0.8rem; border-top: 1px solid rgba(255, 42, 75, 0.15); font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
-                <span><i class="fa-solid fa-circle-info" style="color: var(--accent-cyan);"></i> Click any row above to test conflict verification</span>
-                <span style="color: var(--accent-green);"><i class="fa-solid fa-link"></i> Live Synced</span>
-              </div>
+              <!-- Live Dynamic Result Box -->
+              <div id="hero-verify-result" class="hero-verify-result"></div>
             </div>
 
           </div>
         </div>
       </section>
 
-      <!-- =================================================================
-           FULL INTERACTIVE COMMAND TERMINAL SECTION
-           ================================================================= -->
-      <section id="terminal-section">
+      <!-- =======================================================================
+           STATISTICS METRICS BANNER
+           ======================================================================= -->
+      <section class="stats-section">
+        <div class="container">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-number-wrap">
+                <span class="stat-number" data-target="45000">45,000</span>
+                <span class="stat-suffix">+</span>
+              </div>
+              <div class="stat-label">Active Student Roster</div>
+              <div class="stat-subtext">Across 4 State-of-the-Art Campuses</div>
+            </div>
+
+            <div class="stat-item">
+              <div class="stat-number-wrap">
+                <span class="stat-number" data-target="100">100</span>
+                <span class="stat-suffix">%</span>
+              </div>
+              <div class="stat-label">Cryptographic Verification</div>
+              <div class="stat-subtext">Deanery Single-Claim Atomic Lock</div>
+            </div>
+
+            <div class="stat-item">
+              <div class="stat-number-wrap">
+                <span class="stat-number" data-target="0">0</span>
+                <span class="stat-suffix">DUP</span>
+              </div>
+              <div class="stat-label">Duplicate Registrations</div>
+              <div class="stat-subtext">Strict Cloud Function Idempotence</div>
+            </div>
+
+            <div class="stat-item">
+              <div class="stat-number-wrap">
+                <span class="stat-number" data-target="4">4</span>
+                <span class="stat-suffix">HUBS</span>
+              </div>
+              <div class="stat-label">Global Academic Campuses</div>
+              <div class="stat-subtext">Vellore • Chennai • AP • Bhopal</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =======================================================================
+           CORE FEATURES & ARCHITECTURE
+           ======================================================================= -->
+      <section class="section-spacing" id="features">
         <div class="container">
           <div class="section-header">
-            <div class="section-tag"><i class="fa-solid fa-terminal"></i> COMMAND &amp; CONTROL</div>
-            <h2 class="section-title">INTERACTIVE <span class="glow">COMMAND</span> TERMINAL</h2>
+            <span class="glass-badge">
+              <i class="fa-solid fa-microchip"></i> SYSTEM ARCHITECTURE
+            </span>
+            <h2 class="section-title">Engineered for Academic Integrity</h2>
             <p class="section-desc">
-              Execute live diagnostic instructions, query database states, or issue verification checks directly from the cyber shell.
+              The portal eliminates ghost registrations, credential fraud, and unauthorized seat claims
+              through an automated cryptographic workflow.
             </p>
           </div>
 
-          <div class="terminal-full-card cyber-corners">
-            <div class="terminal-header">
-              <div class="terminal-dots">
-                <span class="terminal-dot red"></span>
-                <span class="terminal-dot yellow"></span>
-                <span class="terminal-dot green"></span>
+          <div class="features-grid">
+            <!-- Feature 1 -->
+            <div class="glass-panel feature-card">
+              <div class="feature-icon-box">
+                <i class="fa-solid fa-fingerprint"></i>
               </div>
-              <div class="terminal-title">nexus_shell@production:~# (bash / zsh)</div>
-              <div class="terminal-badge">INTERACTIVE SHELL</div>
+              <h3 class="feature-title">Deterministic Roll Verification</h3>
+              <p class="feature-desc">
+                Only roll numbers pre-approved by the VIT Admissions Deanery can initiate an account creation. Format regex and whitelist checks execute instantly.
+              </p>
             </div>
 
-            <div class="terminal-full-body" id="full-terminal-body">
-              <div class="terminal-line"><span class="terminal-green">[SYSTEM INITIALIZED]:</span> Nexus Terminal Core v3.8.4 Active.</div>
-              <div class="terminal-line">Type <span class="terminal-cyan">help</span> to list all available instructions.</div>
-              <div class="terminal-line"><span class="terminal-dim">Try: "verify vortex_core", "verify new_handle", "stats", "projects", or "whoami".</span></div>
+            <!-- Feature 2 -->
+            <div class="glass-panel feature-card">
+              <div class="feature-icon-box">
+                <i class="fa-solid fa-lock"></i>
+              </div>
+              <h3 class="feature-title">Atomic Single-Claim Lock</h3>
+              <p class="feature-desc">
+                Every approved roll number can only be claimed once. Cloud database transactions prevent race conditions and duplicate onboarding attempts.
+              </p>
             </div>
 
-            <div style="padding: 0 1.8rem 1.4rem 1.8rem;">
-              <div class="terminal-interactive-form">
-                <span class="terminal-prefix">root@nexus:~#</span>
-                <input 
-                  type="text" 
-                  id="full-terminal-input" 
-                  class="terminal-interactive-input" 
-                  placeholder="Enter instruction (e.g. 'help', 'verify neo', 'whoami', 'stats')..." 
-                  autocomplete="off" 
-                  spellcheck="false"
-                >
+            <!-- Feature 3 -->
+            <div class="glass-panel feature-card">
+              <div class="feature-icon-box">
+                <i class="fa-solid fa-id-badge"></i>
+              </div>
+              <h3 class="feature-title">3D Holographic Digital ID</h3>
+              <p class="feature-desc">
+                Registered students receive a dynamic 3D ID card equipped with encrypted QR codes for campus security gates, libraries, and examination centers.
+              </p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="glass-panel feature-card">
+              <div class="feature-icon-box">
+                <i class="fa-solid fa-file-csv"></i>
+              </div>
+              <h3 class="feature-title">Deanery Bulk CSV Intake</h3>
+              <p class="feature-desc">
+                Admissions officers can ingest thousands of candidate roll numbers in seconds via automated CSV parsing with automatic validation and error reporting.
+              </p>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="glass-panel feature-card">
+              <div class="feature-icon-box">
+                <i class="fa-solid fa-user-shield"></i>
+              </div>
+              <h3 class="feature-title">Role-Based Guarded Access</h3>
+              <p class="feature-desc">
+                Strict separation between Student Dashboards and Admin Telemetry ensures sensitive student personal records remain completely confidential.
+              </p>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="glass-panel feature-card">
+              <div class="feature-icon-box">
+                <i class="fa-solid fa-network-wired"></i>
+              </div>
+              <h3 class="feature-title">Multi-Campus Coordination</h3>
+              <p class="feature-desc">
+                Centralized telemetry orchestrates admission slots, department rosters, and student identity across Vellore, Chennai, AP, and Bhopal campuses.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =======================================================================
+           WORKFLOW - HOW IT WORKS
+           ======================================================================= -->
+      <section class="section-spacing" id="workflow" style="background: rgba(8, 14, 30, 0.4); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+        <div class="container">
+          <div class="section-header">
+            <span class="glass-badge gold">
+              <i class="fa-solid fa-list-check"></i> 3-STEP JOURNEY
+            </span>
+            <h2 class="section-title">How the Onboarding Pipeline Operates</h2>
+            <p class="section-desc">
+              From seat allocation notification to issuing the verified Digital Identity credential.
+            </p>
+          </div>
+
+          <div class="workflow-grid">
+            <div class="glass-panel workflow-card">
+              <span class="step-number">01</span>
+              <div class="step-indicator">1</div>
+              <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: #fff;">Roll Verification</h3>
+              <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                The student inputs their allotted 10-character VIT Roll Number (e.g., <code style="color: var(--accent-cyan); font-family: var(--font-mono);">21BCE1024</code>). The system verifies official approval status.
+              </p>
+            </div>
+
+            <div class="glass-panel workflow-card">
+              <span class="step-number">02</span>
+              <div class="step-indicator">2</div>
+              <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: #fff;">Atomic Registration</h3>
+              <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                The student confirms their name, official email, and credentials. The Firestore transaction permanently locks the roll number to that student's identity.
+              </p>
+            </div>
+
+            <div class="glass-panel workflow-card">
+              <span class="step-number">03</span>
+              <div class="step-indicator">3</div>
+              <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: #fff;">Digital ID Clearance</h3>
+              <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                Instant access to the student dashboard featuring the interactive 3D ID card, security hash, and scannable QR clearance badge for campus facilities.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =======================================================================
+           CAMPUS HUBS
+           ======================================================================= -->
+      <section class="section-spacing" id="campuses">
+        <div class="container">
+          <div class="section-header">
+            <span class="glass-badge">
+              <i class="fa-solid fa-map-location-dot"></i> INSTITUTIONAL NETWORK
+            </span>
+            <h2 class="section-title">One Unified System Across All Campuses</h2>
+            <p class="section-desc">
+              Standardized credential issuance across the four primary campuses of Vellore Institute of Technology.
+            </p>
+          </div>
+
+          <div class="campus-grid">
+            <div class="glass-panel campus-card">
+              <span class="campus-tag">CAMPUS // 01</span>
+              <h3 class="campus-name">VIT Vellore (HQ)</h3>
+              <p class="campus-desc">372-acre eco-friendly main campus housing flagship computing, engineering, and bioscience faculties.</p>
+              <div style="margin-top: auto; font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan);">
+                EST. 1984 • MAIN CAMPUS
+              </div>
+            </div>
+
+            <div class="glass-panel campus-card">
+              <span class="campus-tag">CAMPUS // 02</span>
+              <h3 class="campus-name">VIT Chennai</h3>
+              <p class="campus-desc">State-of-the-art technological hub located in Vandalur-Kelambakkam, specializing in AI, Robotics, and Law.</p>
+              <div style="margin-top: auto; font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan);">
+                EST. 2010 • CHENNAI REGION
+              </div>
+            </div>
+
+            <div class="glass-panel campus-card">
+              <span class="campus-tag">CAMPUS // 03</span>
+              <h3 class="campus-name">VIT-AP (Amaravati)</h3>
+              <p class="campus-desc">Ultra-modern campus designed for future-forward software development, cyber security, and business leadership.</p>
+              <div style="margin-top: auto; font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan);">
+                EST. 2017 • ANDHRA PRADESH
+              </div>
+            </div>
+
+            <div class="glass-panel campus-card">
+              <span class="campus-tag">CAMPUS // 04</span>
+              <h3 class="campus-name">VIT Bhopal</h3>
+              <p class="campus-desc">Central India's leading tech institution focused on Cloud Computing, Gaming Technologies, and Aerospace.</p>
+              <div style="margin-top: auto; font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan);">
+                EST. 2017 • MADHYA PRADESH
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
+      <!-- =======================================================================
+           FREQUENTLY ASKED QUESTIONS
+           ======================================================================= -->
+      <section class="section-spacing" id="faq">
+        <div class="container">
+          <div class="section-header">
+            <span class="glass-badge">
+              <i class="fa-solid fa-circle-question"></i> FREQUENTLY ASKED QUESTIONS
+            </span>
+            <h2 class="section-title">Got Questions? We Have Answers.</h2>
+            <p class="section-desc">
+              Understand the verification protocols, admission approvals, and student credentials.
+            </p>
+          </div>
+
+          <div class="faq-container">
+            <!-- FAQ 1 -->
+            <div class="faq-item active">
+              <button class="faq-question">
+                <span>Why does the portal say "Invalid Roll Number" when I enter mine?</span>
+                <i class="fa-solid fa-chevron-down faq-icon"></i>
+              </button>
+              <div class="faq-answer">
+                Only students who have been officially allotted a seat through VITEEE counseling or Deanery admissions are included in the approved master registry. Ensure your roll number matches the official format (e.g. 21BCE1024). If recently admitted, your record may take up to 24 hours to sync from the registrar.
+              </div>
+            </div>
+
+            <!-- FAQ 2 -->
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Can two people register with the same roll number?</span>
+                <i class="fa-solid fa-chevron-down faq-icon"></i>
+              </button>
+              <div class="faq-answer">
+                No. The registration pipeline uses an atomic single-claim transaction. Once a roll number is successfully claimed, it is locked permanently to that verified student profile and cannot be re-registered by anyone else.
+              </div>
+            </div>
+
+            <!-- FAQ 3 -->
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Is my student personal data visible during public verification?</span>
+                <i class="fa-solid fa-chevron-down faq-icon"></i>
+              </button>
+              <div class="faq-answer">
+                No. The verification portal is privacy-preserving. It confirms whether the roll number is valid, displays masked initials, campus allocation, and program details. Sensitive personal credentials, email addresses, and passwords remain strictly encrypted.
+              </div>
+            </div>
+
+            <!-- FAQ 4 -->
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>How do faculty and admissions administrators upload candidate rosters?</span>
+                <i class="fa-solid fa-chevron-down faq-icon"></i>
+              </button>
+              <div class="faq-answer">
+                Authorized administrators can sign in to the Deanery Admin Panel, where they have access to live metrics, instant single roll additions, and bulk CSV uploads supporting thousands of admissions simultaneously.
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
     </main>
 
-    <!-- =================================================================
+    <!-- =======================================================================
          SITE FOOTER
-         ================================================================= -->
+         ======================================================================= -->
     <footer class="site-footer">
       <div class="container">
         <div class="footer-grid">
-          <div>
-            <div class="brand-logo" style="margin-bottom: 0.5rem;">
-              <div class="brand-emblem"><i class="fa-solid fa-shield-halved"></i></div>
-              <span class="brand-title">VIGNESHWARAN<span class="red">.DEV</span></span>
+          
+          <div class="footer-brand-wrap">
+            <div class="brand-link">
+              <div class="brand-emblem-wrap">
+                <i class="fa-solid fa-graduation-cap"></i>
+              </div>
+              <div class="brand-title-wrap">
+                <span class="brand-main-title">VIT <span class="accent">PORTAL</span></span>
+                <span class="brand-sub-tag">VELLORE INSTITUTE OF TECHNOLOGY</span>
+              </div>
             </div>
-            <p class="footer-brand-desc">
-              Architecting resilient, distributed systems, high-concurrency liquidation engines, and zero-trust cryptographic platforms.
+            <p class="footer-tagline">
+              Official student verification &amp; onboarding ecosystem of Vellore Institute of Technology. Enforcing academic excellence through secure distributed architecture.
             </p>
+            <div style="display: flex; gap: 12px; margin-top: 8px;">
+              <span class="glass-badge success" style="font-size: 0.72rem;">
+                <i class="fa-solid fa-circle-check"></i> SYSTEM STATUS: NORMAL
+              </span>
+            </div>
           </div>
 
           <div>
-            <div class="footer-col-title">NAVIGATION NODES</div>
+            <h4 class="footer-col-title">Portal Links</h4>
             <ul class="footer-links">
-              <li><a href="#hero">01 // Executive Overview</a></li>
-              <li><a href="#architecture">02 // System Architecture</a></li>
-              <li><a href="#projects">03 // Flagship Implementations</a></li>
-              <li><a href="#registry">04 // Cryptographic Registry</a></li>
-              <li><a href="#terminal-section">05 // Interactive Shell</a></li>
+              <li><a href="index.html" class="footer-link">Portal Home</a></li>
+              <li><a href="verify.html" class="footer-link">Verify Roll Number</a></li>
+              <li><a href="register.html" class="footer-link">Student Registration</a></li>
+              <li><a href="login.html" class="footer-link">Student Login</a></li>
+              <li><a href="admin.html" class="footer-link">Deanery Admin Portal</a></li>
             </ul>
           </div>
 
           <div>
-            <div class="footer-col-title">INFRASTRUCTURE</div>
+            <h4 class="footer-col-title">Campuses</h4>
             <ul class="footer-links">
-              <li><span style="color: var(--accent-green);"><i class="fa-solid fa-check"></i> Three.js WebGL Engine</span></li>
-              <li><span style="color: var(--accent-green);"><i class="fa-solid fa-check"></i> Firebase Firestore SDK</span></li>
-              <li><span style="color: var(--accent-green);"><i class="fa-solid fa-check"></i> Web Audio Synthesizer</span></li>
-              <li><span style="color: var(--accent-green);"><i class="fa-solid fa-check"></i> Responsive Glassmorphic UI</span></li>
+              <li><a href="https://vit.ac.in" target="_blank" class="footer-link">VIT Vellore (HQ)</a></li>
+              <li><a href="https://chennai.vit.ac.in" target="_blank" class="footer-link">VIT Chennai</a></li>
+              <li><a href="https://vitap.ac.in" target="_blank" class="footer-link">VIT-AP Amaravati</a></li>
+              <li><a href="https://vitbhopal.ac.in" target="_blank" class="footer-link">VIT Bhopal</a></li>
             </ul>
           </div>
+
+          <div>
+            <h4 class="footer-col-title">Admissions Helpdesk</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px;">
+              Director of Admissions, Vellore Institute of Technology, Vellore - 632014, Tamil Nadu, India.
+            </p>
+            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-cyan); display: flex; flex-direction: column; gap: 4px;">
+              <span><i class="fa-solid fa-envelope"></i> admissions@vit.ac.in</span>
+              <span><i class="fa-solid fa-phone"></i> +91-416-224-3091</span>
+            </div>
+          </div>
+
         </div>
 
         <div class="footer-bottom">
-          <div>&copy; 2026 VIGNESHWARAN. ALL SYSTEM RIGHTS SECURED. PROTOCOL LEVEL 5.</div>
-          <div>ENCRYPTION: AES-256-GCM &bull; HOSTED VIA ANTIGRAVITY RUNTIME</div>
+          <span>&copy; 2026 Vellore Institute of Technology. All Rights Reserved.</span>
+          <div style="display: flex; gap: 20px;">
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Use</a>
+            <a href="#" class="footer-link">Security Disclosures</a>
+          </div>
         </div>
       </div>
     </footer>
 
-    <!-- =================================================================
-         PROJECT DETAILS MODAL
-         ================================================================= -->
-    <div class="modal-overlay" id="project-modal">
-      <div class="cyber-modal cyber-corners">
-        <div class="modal-header">
-          <div class="modal-title" id="project-modal-title">
-            <i class="fa-solid fa-microchip"></i> PROJECT SPECIFICATIONS
-          </div>
-          <button class="modal-close-btn" aria-label="Close modal">&times;</button>
-        </div>
-        <div class="modal-body" id="project-modal-body">
-          <!-- Populated dynamically via js/app.js -->
-        </div>
-      </div>
-    </div>
-
-    <!-- =================================================================
-         FIREBASE CONFIGURATION MODAL
-         ================================================================= -->
-    <div class="modal-overlay" id="firebase-config-modal">
-      <div class="cyber-modal cyber-corners">
-        <div class="modal-header">
-          <div class="modal-title">
-            <i class="fa-solid fa-database" style="color: var(--accent-red-bright);"></i>
-            <span>FIREBASE FIRESTORE CONFIGURATION</span>
-          </div>
-          <button class="modal-close-btn" aria-label="Close modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div id="fb-current-status-note" style="margin-bottom: 1.25rem; font-family: var(--font-mono); font-size: 0.8rem;"></div>
-
-          <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.6;">
-            This portfolio includes dual database connectivity: an ultra-fast in-browser <strong>Sandbox Persistence Engine</strong> (active by default for instant zero-config testing) and direct connectivity to <strong>Live Firebase Firestore Cloud</strong>.
-          </p>
-
-          <form id="fb-config-form">
-            <div class="form-group">
-              <label class="form-label" for="fb-api-key">FIREBASE API KEY</label>
-              <input type="text" id="fb-api-key" class="input-cyber" style="padding-left: 1rem;" placeholder="AIzaSy..." autocomplete="off">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="fb-project-id">FIREBASE PROJECT ID</label>
-              <input type="text" id="fb-project-id" class="input-cyber" style="padding-left: 1rem;" placeholder="my-cyber-portfolio" autocomplete="off">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="fb-auth-domain">AUTH DOMAIN (OPTIONAL)</label>
-              <input type="text" id="fb-auth-domain" class="input-cyber" style="padding-left: 1rem;" placeholder="my-cyber-portfolio.firebaseapp.com" autocomplete="off">
-            </div>
-
-            <div style="display: flex; gap: 0.8rem; margin-top: 1.5rem;">
-              <button type="submit" class="btn-cyber" style="flex: 1;">
-                <i class="fa-solid fa-cloud-arrow-up"></i> CONNECT LIVE FIREBASE
-              </button>
-              <button type="button" class="btn-cyber-outline" id="btn-reset-sandbox" style="flex: 1;">
-                <i class="fa-solid fa-rotate-left"></i> RESET SANDBOX
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Cyber Toast Notification Host -->
-    <div class="toast-container" id="toast-container"></div>
-
   </div>
 
-  <!-- CDN Dependencies: Three.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- Scripts -->
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Lenis Smooth Scroll -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <!-- Confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
-  <!-- CDN Dependencies: Firebase Compat Suite -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- Core Modules -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/animations.js"></script>
 
-  <!-- Application Logic Modules -->
-  <script src="js/sound-fx.js"></script>
-  <script src="js/particles.js"></script>
-  <script src="js/firebase-service.js"></script>
-  <script src="js/app.js"></script>
+  <!-- Hero Quick Verify Inline Interaction Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const heroForm = document.getElementById('hero-quick-verify-form');
+      const heroInput = document.getElementById('hero-roll-input');
+      const heroResult = document.getElementById('hero-verify-result');
+      const chips = document.querySelectorAll('.sample-roll-chip');
+
+      chips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          const roll = chip.getAttribute('data-roll');
+          heroInput.value = roll;
+          runHeroVerify(roll);
+        });
+      });
+
+      heroInput.addEventListener('input', (e) => {
+        e.target.value = e.target.value.toUpperCase().replace(/[^0-9A-Z]/g, '');
+      });
+
+      heroForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        runHeroVerify(heroInput.value.trim());
+      });
+
+      function runHeroVerify(roll) {
+        if (!roll) {
+          window.showToast('Please enter a roll number.', 'danger');
+          return;
+        }
+
+        heroResult.style.display = 'block';
+        heroResult.innerHTML = `
+          <div style="display:flex; align-items:center; gap:10px; color:var(--text-secondary); font-size:0.85rem;">
+            <i class="fa-solid fa-spinner fa-spin" style="color:var(--accent-cyan);"></i> Checking clearance for ${roll}...
+          </div>
+        `;
+
+        window.VitAPI.verifyRollNumber(roll).then(res => {
+          if (!res.valid) {
+            heroResult.innerHTML = `
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  <span style="font-weight:700; color:var(--status-danger); font-size:0.9rem;">
+                    <i class="fa-solid fa-circle-xmark"></i> NOT APPROVED
+                  </span>
+                  <span class="glass-badge danger" style="padding:2px 8px; font-size:0.7rem;">INVALID</span>
+                </div>
+                <div style="font-size:0.82rem; color:var(--text-secondary);">${res.message}</div>
+              </div>
+            `;
+          } else if (res.isRegistered) {
+            heroResult.innerHTML = `
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  <span style="font-weight:700; color:var(--accent-cyan); font-size:0.9rem;">
+                    <i class="fa-solid fa-shield-halved"></i> REGISTERED STUDENT
+                  </span>
+                  <span class="glass-badge" style="padding:2px 8px; font-size:0.7rem;">ACTIVE</span>
+                </div>
+                <div style="font-size:0.82rem; color:var(--text-secondary);">
+                  Student: <strong>${res.data.maskedName}</strong> • VIT ${res.data.campus}
+                </div>
+                <div style="display:flex; gap:8px; margin-top:4px;">
+                  <a href="verify.html?roll=${roll}" class="btn-secondary btn-sm" style="font-size:0.75rem; padding:4px 10px;">
+                    View Dossier <i class="fa-solid fa-arrow-right"></i>
+                  </a>
+                  <a href="login.html" class="btn-primary btn-sm" style="font-size:0.75rem; padding:4px 10px;">
+                    Login
+                  </a>
+                </div>
+              </div>
+            `;
+          } else {
+            heroResult.innerHTML = `
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  <span style="font-weight:700; color:var(--status-success); font-size:0.9rem;">
+                    <i class="fa-solid fa-circle-check"></i> APPROVED &amp; READY
+                  </span>
+                  <span class="glass-badge success" style="padding:2px 8px; font-size:0.7rem;">AVAILABLE</span>
+                </div>
+                <div style="font-size:0.82rem; color:var(--text-secondary);">
+                  Candidate: <strong>${res.data.fullName}</strong> (${res.data.department}, VIT ${res.data.campus})
+                </div>
+                <div style="margin-top:4px;">
+                  <a href="register.html?roll=${roll}&name=${encodeURIComponent(res.data.fullName)}&campus=${encodeURIComponent(res.data.campus)}&dept=${encodeURIComponent(res.data.department)}" class="btn-primary btn-sm" style="font-size:0.75rem; padding:5px 12px; width:100%; justify-content:center;">
+                    Claim &amp; Complete Registration <i class="fa-solid fa-arrow-right"></i>
+                  </a>
+                </div>
+              </div>
+            `;
+          }
+        });
+      }
+    });
+  </script>
+
 </body>
 </html>
