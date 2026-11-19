@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deanery Admin Console // VIT Student Portal</title>
+  <meta name="description" content="Authorized Deanery Admissions administration panel for student roll numbers, CSV bulk imports, and registration analytics.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Application Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Custom Cursor for Desktop -->
+  <div class="custom-cursor"></div>
+  <div class="cursor-follower"></div>
+
+  <!-- Ambient Glow & Background Canvas -->
+  <canvas id="ambient-canvas"></canvas>
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-2"></div>
+
+  <div class="app-wrapper">
+
+    <!-- Top Telemetry HUD -->
+    <aside class="telemetry-bar">
+      <div class="telemetry-group">
+        <div class="telemetry-item">
+          <span class="pulse-dot warning"></span>
+          <span>ADMINISTRATIVE SESSION: <strong id="admin-display-name">DR. K. RAMANATHAN</strong></span>
+        </div>
+        <div class="telemetry-item">
+          <i class="fa-solid fa-shield-halved" style="color: var(--accent-gold-light); font-size: 0.65rem;"></i>
+          <span>ROLE: <strong>DEAN OF ACADEMIC ADMISSIONS</strong></span>
+        </div>
+      </div>
+      <div class="telemetry-group">
+        <button id="btn-reset-demo-data" class="telemetry-btn" title="Reset all demo rolls to initial pristine seed data">
+          <i class="fa-solid fa-rotate-left"></i> RESET DEMO DATA
+        </button>
+        <button onclick="window.VitAuth.logout()" class="telemetry-btn">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> LOG OUT
+        </button>
+      </div>
+    </aside>
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+      <div class="container nav-container">
+        <a href="index.html" class="brand-link">
+          <div class="brand-emblem-wrap" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2)); border-color: rgba(245, 158, 11, 0.4);">
+            <i class="fa-solid fa-shield-halved" style="color: var(--accent-gold-light);"></i>
+          </div>
+          <div class="brand-title-wrap">
+            <span class="brand-main-title">VIT <span class="accent" style="background: var(--gradient-gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ADMIN CONSOLE</span></span>
+            <span class="brand-sub-tag">DEANERY OF ACADEMIC ADMISSIONS</span>
+          </div>
+        </a>
+
+        <nav>
+          <ul class="nav-menu">
+            <li><a href="admin.html" class="nav-link active"><i class="fa-solid fa-table-list"></i> Roster Registry</a></li>
+            <li><a href="verify.html" class="nav-link"><i class="fa-solid fa-shield-halved"></i> Verify Tool</a></li>
+            <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          </ul>
+        </nav>
+
+        <div class="nav-actions">
+          <div id="nav-user-area" style="display: flex; align-items: center; gap: 10px;"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Admin Dashboard Content -->
+    <main class="section-spacing">
+      <div class="container">
+        
+        <!-- Header Banner -->
+        <div style="margin-bottom: 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <span class="glass-badge gold" style="margin-bottom: 8px;">
+              <i class="fa-solid fa-user-shield"></i> MASTER ADMISSIONS REGISTRY
+            </span>
+            <h1 style="font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; color: #fff;">
+              Student Roll Administration &amp; Telemetry
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+              Manage approved candidate allocations, ingest bulk rosters via CSV, and monitor cryptographic claims.
+            </p>
+          </div>
+
+          <div class="admin-actions-group">
+            <button id="btn-open-add-roll" class="btn-primary btn-sm">
+              <i class="fa-solid fa-plus"></i> Add Approved Roll
+            </button>
+            <button id="btn-open-csv-upload" class="btn-outline-gold btn-sm">
+              <i class="fa-solid fa-file-arrow-up"></i> Upload CSV Roster
+            </button>
+            <button id="btn-export-csv" class="btn-secondary btn-sm">
+              <i class="fa-solid fa-file-export"></i> Export CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Analytics Metric Cards -->
+        <div class="admin-metrics-grid">
+          
+          <div class="glass-panel admin-kpi-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div class="kpi-icon-wrap" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue);">
+                <i class="fa-solid fa-database"></i>
+              </div>
+              <span class="glass-badge" style="font-size: 0.7rem; padding: 2px 8px;">DEANERY</span>
+            </div>
+            <div>
+              <div class="kpi-val" id="metric-total-approved">0</div>
+              <div class="kpi-title">Total Approved Rolls</div>
+            </div>
+          </div>
+
+          <div class="glass-panel admin-kpi-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div class="kpi-icon-wrap" style="background: rgba(16, 185, 129, 0.15); color: var(--status-success);">
+                <i class="fa-solid fa-user-check"></i>
+              </div>
+              <span class="glass-badge success" style="font-size: 0.7rem; padding: 2px 8px;">CLAIMED</span>
+            </div>
+            <div>
+              <div class="kpi-val" id="metric-total-registered">0</div>
+              <div class="kpi-title">Registered Students</div>
+            </div>
+          </div>
+
+          <div class="glass-panel admin-kpi-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div class="kpi-icon-wrap" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-gold-light);">
+                <i class="fa-solid fa-clock"></i>
+              </div>
+              <span class="glass-badge gold" style="font-size: 0.7rem; padding: 2px 8px;">UNCLAIMED</span>
+            </div>
+            <div>
+              <div class="kpi-val" id="metric-pending-claims">0</div>
+              <div class="kpi-title">Pending Registrations</div>
+            </div>
+          </div>
+
+          <div class="glass-panel admin-kpi-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div class="kpi-icon-wrap" style="background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan);">
+                <i class="fa-solid fa-percent"></i>
+              </div>
+              <span class="glass-badge" style="font-size: 0.7rem; padding: 2px 8px;">RATIO</span>
+            </div>
+            <div>
+              <div class="kpi-val" id="metric-verification-rate">0%</div>
+              <div class="kpi-title">Onboarding Completion</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Toolbar & Filter Controls -->
+        <div class="admin-toolbar">
+          <div class="admin-search-wrap">
+            <div class="input-with-icon">
+              <input 
+                type="text" 
+                id="admin-search-input" 
+                class="form-control" 
+                placeholder="Search by Roll Number, Name, Department, or Campus..."
+              >
+              <i class="fa-solid fa-magnifying-glass field-icon"></i>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono);">STATUS:</label>
+            <select id="admin-status-filter" class="form-control" style="width: 160px; padding: 10px 14px;">
+              <option value="all">All Records</option>
+              <option value="registered">Registered</option>
+              <option value="unclaimed">Unclaimed</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Student Roster Table -->
+        <div class="table-responsive">
+          <table class="admin-data-table">
+            <thead>
+              <tr>
+                <th>Roll Number</th>
+                <th>Candidate / Student Name</th>
+                <th>Email Address</th>
+                <th>Department</th>
+                <th>Campus</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-roster-tbody">
+              <!-- Rendered dynamically by admin.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Audit Activity Log Section -->
+        <div style="margin-top: 40px;">
+          <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-timeline" style="color: var(--accent-cyan);"></i> Real-Time Audit &amp; Verification Activity Log
+          </h3>
+
+          <div class="glass-panel" style="padding: 20px;" id="admin-audit-logs">
+            <!-- Rendered dynamically by admin.js -->
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <span>&copy; 2026 Vellore Institute of Technology. Authorized Deanery Admissions Administration Console.</span>
+          <div style="display: flex; gap: 20px;">
+            <a href="index.html" class="footer-link">Home</a>
+            <a href="verify.html" class="footer-link">Verify Registry</a>
+            <button onclick="window.VitAuth.logout()" class="footer-link" style="background:none; border:none; cursor:pointer;">Log Out</button>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- =========================================================================
+       MODAL 1: ADD SINGLE APPROVED ROLL NUMBER
+       ========================================================================= -->
+  <div class="modal-overlay" id="add-roll-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Authorize New Roll Number</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+
+      <form id="add-roll-form">
+        <div class="form-group">
+          <label class="form-label">VIT Roll Number <span style="color:var(--status-danger)">*</span></label>
+          <div class="input-with-icon">
+            <input type="text" id="new-roll-input" class="form-control" placeholder="e.g. 24BCE9999" maxlength="10" required>
+            <i class="fa-solid fa-hashtag field-icon"></i>
+          </div>
+          <span class="input-hint">Format: 2 digits year + 3 letters branch + 4 digits index</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Candidate Allotted Name <span style="color:var(--status-danger)">*</span></label>
+          <div class="input-with-icon">
+            <input type="text" id="new-name-input" class="form-control" placeholder="e.g. Rahul Sharma" required>
+            <i class="fa-solid fa-user field-icon"></i>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Campus Allocation</label>
+            <select id="new-campus-select" class="form-control">
+              <option value="Vellore">VIT Vellore (HQ)</option>
+              <option value="Chennai">VIT Chennai</option>
+              <option value="AP">VIT-AP Amaravati</option>
+              <option value="Bhopal">VIT Bhopal</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Program Degree</label>
+            <input type="text" id="new-degree-input" class="form-control" value="B.Tech" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Department / Branch</label>
+          <select id="new-dept-select" class="form-control">
+            <option value="Computer Science & Engineering">Computer Science & Engineering</option>
+            <option value="AI & Machine Learning">AI & Machine Learning</option>
+            <option value="Data Science">Data Science</option>
+            <option value="Software Engineering">Software Engineering</option>
+            <option value="Electronics & Communication">Electronics & Communication</option>
+            <option value="Mechanical Engineering">Mechanical Engineering</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 14px;">
+          <i class="fa-solid fa-plus"></i> Authorize &amp; Save to Master Registry
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 2: BULK CSV ROSTER UPLOAD
+       ========================================================================= -->
+  <div class="modal-overlay" id="csv-upload-modal">
+    <div class="modal-box" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Bulk Ingest Candidate Roster (CSV)</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+
+      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;">
+        Upload a comma-separated values (CSV) file containing allotted roll numbers. Expected columns:
+        <code style="color: var(--accent-cyan); font-family: var(--font-mono);">RollNumber, FullName, Campus, Department, Degree</code>
+      </p>
+
+      <div style="border: 2px dashed var(--border-highlight); border-radius: var(--radius-md); padding: 30px; text-align: center; margin-bottom: 20px; background: rgba(0,0,0,0.2);">
+        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.2rem; color: var(--accent-gold-light); margin-bottom: 12px; display: block;"></i>
+        <label for="csv-file-input" class="btn-secondary btn-sm" style="cursor: pointer;">
+          <i class="fa-solid fa-folder-open"></i> Select CSV File from Computer
+        </label>
+        <input type="file" id="csv-file-input" accept=".csv" style="display: none;">
+        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 8px;">Supports UTF-8 CSV exports</div>
+      </div>
+
+      <!-- CSV Preview Area -->
+      <div id="csv-preview-area"></div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
+        <button type="button" class="btn-secondary btn-sm modal-close-btn">Cancel</button>
+        <button type="button" id="btn-confirm-csv-import" class="btn-primary btn-sm" disabled>
+          <i class="fa-solid fa-file-import"></i> Ingest Records
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/admin.js"></script>
+
+</body>
+</html>
