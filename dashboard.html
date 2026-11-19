@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard // VIT Student Portal</title>
+  <meta name="description" content="Authorized student dashboard, 3D Digital Student ID Card, and academic verification credentials for Vellore Institute of Technology.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Application Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Custom Cursor for Desktop -->
+  <div class="custom-cursor"></div>
+  <div class="cursor-follower"></div>
+
+  <!-- Ambient Glow & Background Canvas -->
+  <canvas id="ambient-canvas"></canvas>
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-2"></div>
+
+  <div class="app-wrapper">
+
+    <!-- Top Telemetry HUD -->
+    <aside class="telemetry-bar">
+      <div class="telemetry-group">
+        <div class="telemetry-item">
+          <span class="pulse-dot"></span>
+          <span>STUDENT SESSION: <strong class="bind-student-roll">LOADING...</strong></span>
+        </div>
+        <div class="telemetry-item">
+          <i class="fa-solid fa-circle-check" style="color: var(--status-success); font-size: 0.65rem;"></i>
+          <span>STATUS: <strong>VERIFIED ACTIVE</strong></span>
+        </div>
+      </div>
+      <div class="telemetry-group">
+        <button onclick="window.VitAuth.logout()" class="telemetry-btn">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> LOG OUT
+        </button>
+      </div>
+    </aside>
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+      <div class="container nav-container">
+        <a href="index.html" class="brand-link">
+          <div class="brand-emblem-wrap">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div class="brand-title-wrap">
+            <span class="brand-main-title">VIT <span class="accent">PORTAL</span></span>
+            <span class="brand-sub-tag">STUDENT DASHBOARD</span>
+          </div>
+        </a>
+
+        <nav>
+          <ul class="nav-menu">
+            <li><a href="dashboard.html" class="nav-link active"><i class="fa-solid fa-id-badge"></i> My ID Card</a></li>
+            <li><a href="verify.html" class="nav-link"><i class="fa-solid fa-shield-halved"></i> Verify Registry</a></li>
+            <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          </ul>
+        </nav>
+
+        <div class="nav-actions">
+          <div id="nav-user-area" style="display: flex; align-items: center; gap: 10px;"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dashboard Content Area -->
+    <main class="section-spacing">
+      <div class="container">
+        
+        <!-- Welcome Banner -->
+        <div style="margin-bottom: 36px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <span class="glass-badge success" style="margin-bottom: 8px;">
+              <i class="fa-solid fa-circle-check"></i> ADMISSION CREDENTIAL VERIFIED
+            </span>
+            <h1 style="font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; color: #fff;">
+              Welcome, <span class="bind-student-name gradient-text">Student</span>
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+              Enrolled in <span class="bind-student-dept" style="color: #fff; font-weight: 600;">Department</span> • <span class="bind-student-campus" style="color: var(--accent-cyan); font-weight: 600;">Campus</span>
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button id="btn-print-id" class="btn-primary btn-sm">
+              <i class="fa-solid fa-print"></i> Print / Download ID
+            </button>
+            <button id="btn-view-slip" class="btn-secondary btn-sm">
+              <i class="fa-solid fa-file-invoice"></i> Verification Slip
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Dashboard 2-Column Grid -->
+        <div class="dashboard-grid">
+          
+          <!-- Left Column: 3D Holographic ID Card -->
+          <div class="id-card-wrapper">
+            
+            <div class="digital-id-card tilt-card" id="student-digital-card">
+              <div class="id-card-sheen"></div>
+
+              <!-- Top: Crest & Institution Header -->
+              <div class="id-card-top">
+                <div class="id-card-institution">
+                  <div class="id-crest">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                  </div>
+                  <div>
+                    <div class="id-inst-name">VELLORE INSTITUTE OF TECHNOLOGY</div>
+                    <div class="id-inst-sub bind-student-campus">VIT VELLORE</div>
+                  </div>
+                </div>
+                <div class="id-chip"></div>
+              </div>
+
+              <!-- Middle: Student Photo & Bio -->
+              <div class="id-card-middle">
+                <div class="id-photo-frame">
+                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Student Photo">
+                </div>
+                <div class="id-student-info">
+                  <div class="id-student-name bind-student-name">Student Name</div>
+                  <div class="id-student-roll bind-student-roll">21BCE1024</div>
+                  <div class="id-student-dept bind-student-dept">Computer Science &amp; Engineering</div>
+                  <div class="id-student-campus">
+                    <span>BATCH: <strong class="bind-student-batch" style="color:#fff;">2022 - 2026</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bottom: QR Code & Security Seal -->
+              <div class="id-card-bottom">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div class="id-qr-box" id="student-id-qrcode">
+                    <!-- Dynamic QR generated by QRCode.js -->
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <div class="id-verified-seal">
+                      <i class="fa-solid fa-shield-check"></i> DEANERY VERIFIED
+                    </div>
+                    <div class="id-validity">
+                      REG: <span class="bind-student-regdate">Nov 2026</span>
+                    </div>
+                  </div>
+                </div>
+                <div style="text-align: right; font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted);">
+                  OFFICIAL STUDENT CREDENTIAL
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Hint under ID card -->
+            <p style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); text-align: center;">
+              <i class="fa-solid fa-arrows-up-down-left-right"></i> Hover or move mouse across ID card for 3D holographic tilt
+            </p>
+
+          </div>
+
+          <!-- Right Column: Verification Dossier & System Clearances -->
+          <div style="display: flex; flex-direction: column; gap: 24px;">
+            
+            <!-- Clearances Card -->
+            <div class="glass-panel" style="padding: 28px;">
+              <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-shield-halved" style="color: var(--accent-cyan);"></i> Campus System Clearances
+              </h3>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="glass-panel" style="padding: 16px; background: rgba(0,0,0,0.3);">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                    <span style="font-size: 0.85rem; font-weight: 600; color: #fff;">Roll Identity Binding</span>
+                    <i class="fa-solid fa-circle-check" style="color: var(--status-success);"></i>
+                  </div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">Cryptographic lock confirmed</span>
+                </div>
+
+                <div class="glass-panel" style="padding: 16px; background: rgba(0,0,0,0.3);">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                    <span style="font-size: 0.85rem; font-weight: 600; color: #fff;">Library &amp; Lab Access</span>
+                    <i class="fa-solid fa-circle-check" style="color: var(--status-success);"></i>
+                  </div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">Active across all faculties</span>
+                </div>
+
+                <div class="glass-panel" style="padding: 16px; background: rgba(0,0,0,0.3);">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                    <span style="font-size: 0.85rem; font-weight: 600; color: #fff;">Exam Hall Ticket Clearance</span>
+                    <i class="fa-solid fa-circle-check" style="color: var(--status-success);"></i>
+                  </div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">Eligible for semester exams</span>
+                </div>
+
+                <div class="glass-panel" style="padding: 16px; background: rgba(0,0,0,0.3);">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                    <span style="font-size: 0.85rem; font-weight: 600; color: #fff;">Hostel / Gate Turnstile</span>
+                    <i class="fa-solid fa-circle-check" style="color: var(--status-success);"></i>
+                  </div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">QR credential authorized</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Student Metadata Dossier Card -->
+            <div class="glass-panel" style="padding: 28px;">
+              <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-id-card-clip" style="color: var(--accent-gold-light);"></i> Enrollment Record Dossier
+              </h3>
+
+              <div class="status-details-grid">
+                <div class="detail-row">
+                  <span class="detail-label">Full Name</span>
+                  <span class="detail-val bind-student-name">Loading...</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Roll Number</span>
+                  <span class="detail-val bind-student-roll" style="font-family: var(--font-mono); color: var(--accent-cyan);">Loading...</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Registered Institutional Email</span>
+                  <span class="detail-val bind-student-email" style="font-family: var(--font-mono); font-size: 0.85rem;">Loading...</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Assigned Campus</span>
+                  <span class="detail-val bind-student-campus">Loading...</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Academic Program</span>
+                  <span class="detail-val bind-student-dept">Loading...</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Registration Date</span>
+                  <span class="detail-val bind-student-regdate">Loading...</span>
+                </div>
+              </div>
+
+              <!-- Verification Hash -->
+              <div style="margin-top: 16px; padding: 14px; background: rgba(0,0,0,0.4); border-radius: var(--radius-sm); border: 1px dashed var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                <div>
+                  <div style="font-size: 0.72rem; font-family: var(--font-mono); color: var(--text-muted);">CRYPTOGRAPHIC SIGNATURE HASH</div>
+                  <div class="bind-student-hash" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-cyan); font-weight: 600;">VIT-SEC-AUTH-2026-HASH</div>
+                </div>
+                <span class="glass-badge success" style="padding: 2px 8px; font-size: 0.7rem;">
+                  <i class="fa-solid fa-check"></i> TAMPER-PROOF
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <span>&copy; 2026 Vellore Institute of Technology. Authorized Student Session.</span>
+          <div style="display: flex; gap: 20px;">
+            <a href="index.html" class="footer-link">Home</a>
+            <a href="verify.html" class="footer-link">Verify Registry</a>
+            <button onclick="window.VitAuth.logout()" class="footer-link" style="background:none; border:none; cursor:pointer;">Log Out</button>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Verification Slip Modal -->
+  <div class="modal-overlay" id="verification-slip-modal">
+    <div class="modal-box" style="max-width: 640px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="brand-emblem-wrap" style="width: 32px; height: 32px;">
+            <i class="fa-solid fa-graduation-cap" style="font-size: 0.9rem;"></i>
+          </div>
+          <div>
+            <h3 class="modal-title" style="font-size: 1.15rem;">Official Verification Certificate</h3>
+            <span style="font-size: 0.7rem; font-family: var(--font-mono); color: var(--text-muted);">DEANERY OF ADMISSIONS // VIT</span>
+          </div>
+        </div>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+
+      <div style="padding: 20px; background: rgba(0,0,0,0.4); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); margin-bottom: 20px;">
+        <p style="font-size: 0.9rem; line-height: 1.6; color: var(--text-primary); margin-bottom: 16px;">
+          This certifies that student <strong class="bind-student-name" style="color: #fff;">Student</strong> bearing Roll Number <strong class="bind-student-roll" style="color: var(--accent-cyan); font-family: var(--font-mono);">21BCE1024</strong> is an officially approved, enrolled candidate at <strong class="bind-student-campus">VIT Vellore</strong>.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.8rem; margin-bottom: 16px;">
+          <div><span style="color: var(--text-muted);">PROGRAM:</span> <span class="bind-student-dept" style="color: #fff;">CSE</span></div>
+          <div><span style="color: var(--text-muted);">ENROLLMENT:</span> <span style="color: var(--status-success); font-weight: 600;">ACTIVE VERIFIED</span></div>
+          <div><span style="color: var(--text-muted);">BATCH:</span> <span class="bind-student-batch" style="color: #fff;">2022-2026</span></div>
+          <div><span style="color: var(--text-muted);">DATE:</span> <span class="bind-student-regdate" style="color: #fff;">Nov 2026</span></div>
+        </div>
+
+        <div style="border-top: 1px dashed var(--border-subtle); padding-top: 12px; display: flex; justify-content: space-between; align-items: flex-end;">
+          <div>
+            <div style="font-size: 0.7rem; font-family: var(--font-mono); color: var(--text-muted);">DIGITAL SIGNATURE ID</div>
+            <div class="bind-student-hash" style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--accent-cyan);">VIT-SEC-AUTH</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-family: 'Space Grotesk', cursive; font-size: 1.1rem; color: var(--accent-gold-light);">Dr. K. Ramanathan</div>
+            <div style="font-size: 0.65rem; color: var(--text-muted);">Registrar &amp; Dean of Admissions</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button onclick="window.print()" class="btn-primary btn-sm">
+          <i class="fa-solid fa-print"></i> Print Official Slip
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/dashboard.js"></script>
+
+</body>
+</html>
